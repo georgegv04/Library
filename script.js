@@ -26,25 +26,34 @@ for (let i = 0; i < library.booksList.length; i++) {
   let bookCard = document.createElement("div");
   bookCard.classList.add("book-card");
 
+  let topGroup = document.createElement("div");
+  topGroup.classList.add("top-group");
+
   let bookTitle = document.createElement("div");
   bookTitle.classList.add("book-title");
   bookTitle.textContent = library.booksList[i].title;
-  bookCard.appendChild(bookTitle);
+  topGroup.appendChild(bookTitle);
 
   let bookAuthor = document.createElement("div");
   bookAuthor.classList.add("book-author");
   bookAuthor.textContent = library.booksList[i].author;
-  bookCard.appendChild(bookAuthor);
+  topGroup.appendChild(bookAuthor);
+
+  let bottomGroup = document.createElement("div");
+  bottomGroup.classList.add("bottom-group");
 
   let bookPages = document.createElement("div");
   bookPages.classList.add("book-pages");
   bookPages.textContent = library.booksList[i].pages;
-  bookCard.appendChild(bookPages);
+  bottomGroup.appendChild(bookPages);
 
   let bookStatus = document.createElement("div");
   bookStatus.classList.add("book-status");
   bookStatus.textContent = library.booksList[i].isRead;
-  bookCard.appendChild(bookStatus);
+  bottomGroup.appendChild(bookStatus);
+
+  bookCard.appendChild(topGroup);
+  bookCard.appendChild(bottomGroup);
 
   libraryContainer.appendChild(bookCard);
 }
