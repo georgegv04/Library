@@ -22,6 +22,7 @@ for (let i = 0; i < library.booksList.length; i++) {
   bookCard.classList.add("book-card");
 
   let bookDetails = document.createElement("div");
+  bookDetails.classList.add("book-details");
   bookDetails.textContent =
     library.booksList[i].title +
     library.booksList[i].author +

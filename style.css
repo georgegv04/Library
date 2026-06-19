@@ -34,4 +34,16 @@ header {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
+  padding: 38px;
+}
+
+.book-card {
+  display: flex;
+  flex-direction: column;
+
+  background-color: #fffaf2;
+  color: #172033;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(15, 27, 42, 0.12);
 }
