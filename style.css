@@ -1,3 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  background: beige;
+  background-color: #f6f1e8;
+}
+
+header h1 {
+  color: #f8f3ea;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 24px 48px;
+  background-color: #0f1b2a;
+}
+
+.add-book-btn {
+  padding: 12px 22px;
+  border-radius: 6px;
+  font-weight: 700;
+  border: 0;
+  background-color: #e8c48f;
+  color: #182233;
+}
+
+.library-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
 }
