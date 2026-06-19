@@ -16,6 +16,10 @@ library.addBook("Βίος και Λόγοι", "Άγιος Πορφύριος", 6
 library.addBook("The Brothers Karamazov", "Fyodor Dostoevsky", 885, false);
 // console.log(library.booksList);
 
-const firstBookTitle = document.querySelector(".first-book-title");
+const libraryContainer = document.querySelector(".library-container");
 
-firstBookTitle.textContent = library.booksList[0].title;
+for (let i = 0; i < library.booksList.length; i++) {
+  let bookCard = document.createElement("div");
+  bookCard.classList.add("book-card");
+  libraryContainer.appendChild(bookCard);
+}
