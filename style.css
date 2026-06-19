@@ -32,7 +32,8 @@ header {
 
 .library-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
+  justify-content: center;
   gap: 24px;
   padding: 48px;
 }
@@ -40,10 +41,63 @@ header {
 .book-card {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  gap: 24px;
 
   background-color: #fffaf2;
   color: #172033;
   padding: 24px;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(15, 27, 42, 0.12);
+}
+
+.top-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e6dccd;
+}
+
+.bottom-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: auto;
+}
+
+.book-title {
+  color: #172033;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.book-author {
+  color: #6b6b6b;
+  font-size: 1rem;
+}
+
+.book-pages {
+  color: #172033;
+  font-size: 0.95rem;
+}
+
+.book-status {
+  font-size: 1rem;
+  width: fit-content;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.status-read {
+  color: #2e7d32;
+  background-color: #e4f3e6;
+}
+
+.status-not-read {
+  color: #b45309;
+  background-color: #fff3d6;
 }

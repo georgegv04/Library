@@ -6,17 +6,22 @@ const library = {
       title,
       author,
       pages,
-      isRead: readStatus,
+      readStatus,
     });
   },
 };
 
-library.addBook("Ο Άγιος Παϊσιος ο Αγιορείτης", "Άγιος Παϊσιος", 665, "Read");
-library.addBook("Βίος και Λόγοι", "Άγιος Πορφύριος", 600, "Read");
+library.addBook(
+  "Ο Άγιος Παϊσιος ο Αγιορείτης",
+  "Άγιος Παϊσιος",
+  "665 pages",
+  "Read",
+);
+library.addBook("Βίος και Λόγοι", "Άγιος Πορφύριος", "600 pages", "Read");
 library.addBook(
   "The Brothers Karamazov",
   "Fyodor Dostoevsky",
-  885,
+  "885 pages",
   "Not read yet",
 );
 
@@ -49,7 +54,13 @@ for (let i = 0; i < library.booksList.length; i++) {
 
   let bookStatus = document.createElement("div");
   bookStatus.classList.add("book-status");
-  bookStatus.textContent = library.booksList[i].isRead;
+  bookStatus.textContent = library.booksList[i].readStatus;
+
+  if (library.booksList[i].readStatus === "Read") {
+    bookStatus.classList.add("status-read");
+  } else {
+    bookStatus.classList.add("status-not-read");
+  }
   bottomGroup.appendChild(bookStatus);
 
   bookCard.appendChild(topGroup);
