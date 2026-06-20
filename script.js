@@ -24,12 +24,12 @@ library.addBook(
   "885 pages",
   "Not read yet",
 );
-library.addBook(
-  "To Kill a Mockingbird",
-  "Harper Lee",
-  "336 pages",
-  "Not read yet",
-);
+// library.addBook(
+//   "To Kill a Mockingbird",
+//   "Harper Lee",
+//   "336 pages",
+//   "Not read yet",
+// );
 
 const libraryContainer = document.querySelector(".library-container");
 
@@ -74,3 +74,15 @@ for (let i = 0; i < library.booksList.length; i++) {
 
   libraryContainer.appendChild(bookCard);
 }
+
+const bookForm = document.querySelector(".book-form");
+const addBookBtn = document.querySelector(".add-book-btn");
+
+addBookBtn.addEventListener("click", () => {
+  bookForm.classList.add("active");
+});
+
+const cancelBtn = document.querySelector(".cancel-btn");
+cancelBtn.addEventListener("click", () => {
+  bookForm.classList.remove("active");
+});
