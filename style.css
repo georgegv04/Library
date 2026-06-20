@@ -32,10 +32,10 @@ header {
 
 .library-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
   justify-content: center;
   gap: 24px;
-  padding: 48px;
+  padding: 64px;
 }
 
 .book-card {
@@ -43,7 +43,6 @@ header {
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-
   background-color: #fffaf2;
   color: #172033;
   padding: 24px;
@@ -87,7 +86,7 @@ header {
   font-size: 1rem;
   width: fit-content;
   padding: 8px 14px;
-  border-radius: 999px;
+  border-radius: 10px;
   font-weight: 700;
   font-size: 0.95rem;
 }

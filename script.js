@@ -24,6 +24,12 @@ library.addBook(
   "885 pages",
   "Not read yet",
 );
+library.addBook(
+  "To Kill a Mockingbird",
+  "Harper Lee",
+  "336 pages",
+  "Not read yet",
+);
 
 const libraryContainer = document.querySelector(".library-container");
 
