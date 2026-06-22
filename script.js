@@ -79,6 +79,7 @@ for (let i = 0; i < library.booksList.length; i++) {
 const modalOverlay = document.querySelector(".modal-overlay");
 const addNewBookBtn = document.querySelector(".add-new-book-btn");
 const cancelBtn = document.querySelector(".cancel-btn");
+const bookForm = document.querySelector(".book-form");
 
 addNewBookBtn.addEventListener("click", () => {
   modalOverlay.classList.add("active");
@@ -151,4 +152,7 @@ submitBookBtn.addEventListener("click", (event) => {
   newBookCard.appendChild(bottomGroup);
 
   libraryContainer.appendChild(newBookCard);
+
+  modalOverlay.classList.remove("active");
+  bookForm.reset();
 });
