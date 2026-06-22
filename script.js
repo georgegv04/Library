@@ -11,19 +11,19 @@ const library = {
   },
 };
 
-library.addBook(
-  "Ο Άγιος Παϊσιος ο Αγιορείτης",
-  "Άγιος Παϊσιος",
-  "665 pages",
-  "Read",
-);
-library.addBook("Βίος και Λόγοι", "Άγιος Πορφύριος", "600 pages", "Read");
-library.addBook(
-  "The Brothers Karamazov",
-  "Fyodor Dostoevsky",
-  "885 pages",
-  "Not read yet",
-);
+// library.addBook(
+//   "Ο Άγιος Παϊσιος ο Αγιορείτης",
+//   "Άγιος Παϊσιος",
+//   "665 pages",
+//   "Read",
+// );
+// library.addBook("Βίος και Λόγοι", "Άγιος Πορφύριος", "600 pages", "Read");
+// library.addBook(
+//   "The Brothers Karamazov",
+//   "Fyodor Dostoevsky",
+//   "885 pages",
+//   "Not read yet",
+// );
 // library.addBook(
 //   "To Kill a Mockingbird",
 //   "Harper Lee",
@@ -75,14 +75,80 @@ for (let i = 0; i < library.booksList.length; i++) {
   libraryContainer.appendChild(bookCard);
 }
 
+// Code for hiding and displaying the form
 const modalOverlay = document.querySelector(".modal-overlay");
-const addBookBtn = document.querySelector(".add-book-btn");
+const addNewBookBtn = document.querySelector(".add-new-book-btn");
 const cancelBtn = document.querySelector(".cancel-btn");
 
-addBookBtn.addEventListener("click", () => {
+addNewBookBtn.addEventListener("click", () => {
   modalOverlay.classList.add("active");
 });
 
 cancelBtn.addEventListener("click", () => {
   modalOverlay.classList.remove("active");
+});
+
+const submitBookBtn = document.querySelector(".submit-book-btn");
+submitBookBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const titleInput = document.querySelector("#title");
+  const title = titleInput.value;
+
+  const authorInput = document.querySelector("#author");
+  const author = authorInput.value;
+
+  const pagesInput = document.querySelector("#pages");
+  const pages = pagesInput.value;
+
+  let readStatusInput = document.querySelector("#read-status");
+  let readStatus = readStatusInput.checked;
+  if (readStatus === true) {
+    readStatus = "Read";
+  } else {
+    readStatus = "Not read yet";
+  }
+
+  library.addBook(title, author, pages, readStatus);
+
+  const newBookCard = document.createElement("div");
+  newBookCard.classList.add("book-card");
+
+  const newBookTitle = document.createElement("div");
+  newBookTitle.classList.add("book-title");
+  newBookTitle.textContent = title;
+
+  const newBookAuthor = document.createElement("div");
+  newBookAuthor.classList.add("book-author");
+  newBookAuthor.textContent = author;
+
+  const newBookPages = document.createElement("div");
+  newBookPages.classList.add("book-pages");
+  newBookPages.textContent = pages;
+
+  const newBookStatus = document.createElement("div");
+  newBookStatus.classList.add("book-status");
+  newBookStatus.textContent = readStatus;
+
+  if (readStatus === "Read") {
+    newBookStatus.classList.add("status-read");
+  } else {
+    newBookStatus.classList.add("status-not-read");
+  }
+
+  const topGroup = document.createElement("div");
+  topGroup.classList.add("top-group");
+  topGroup.appendChild(newBookTitle);
+  topGroup.appendChild(newBookAuthor);
+
+  newBookCard.appendChild(topGroup);
+
+  const bottomGroup = document.createElement("div");
+  bottomGroup.classList.add("bottom-group");
+  bottomGroup.appendChild(newBookPages);
+  bottomGroup.appendChild(newBookStatus);
+
+  newBookCard.appendChild(bottomGroup);
+
+  libraryContainer.appendChild(newBookCard);
 });
