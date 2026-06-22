@@ -75,14 +75,14 @@ for (let i = 0; i < library.booksList.length; i++) {
   libraryContainer.appendChild(bookCard);
 }
 
-const bookForm = document.querySelector(".book-form");
+const modalOverlay = document.querySelector(".modal-overlay");
 const addBookBtn = document.querySelector(".add-book-btn");
+const cancelBtn = document.querySelector(".cancel-btn");
 
 addBookBtn.addEventListener("click", () => {
-  bookForm.classList.add("active");
+  modalOverlay.classList.add("active");
 });
 
-const cancelBtn = document.querySelector(".cancel-btn");
 cancelBtn.addEventListener("click", () => {
-  bookForm.classList.remove("active");
+  modalOverlay.classList.remove("active");
 });
