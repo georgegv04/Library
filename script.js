@@ -86,6 +86,9 @@ const booksCount = document.createElement("div");
 booksCount.classList.add("books-count");
 booksCount.textContent = `${library.booksList.length} Books`;
 
+const libraryMessageTitle = document.querySelector(".library-message-title");
+const libraryMessageText = document.querySelector(".library-message-text");
+
 const libraryHeader = document.querySelector(".library-header");
 libraryHeader.appendChild(booksCount);
 
@@ -116,6 +119,12 @@ submitBookBtn.addEventListener("click", (event) => {
     booksCount.textContent = `${library.booksList.length} Book`;
   } else {
     booksCount.textContent = `${library.booksList.length} Books`;
+  }
+
+  if (library.booksList.length > 0) {
+    libraryMessageTitle.textContent = "Keep adding to your library!";
+    libraryMessageText.textContent =
+      "Your collection is growing. Add more books to build your personal library.";
   }
 
   const newBookCard = document.createElement("div");

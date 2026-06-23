@@ -9,10 +9,6 @@ body {
   background-color: #f6f1e8;
 }
 
-/* header h1 {
-  color: #f8f3ea;
-} */
-
 header {
   display: flex;
   justify-content: space-between;
@@ -249,4 +245,30 @@ header {
   background-color: #0f1b2a;
   color: #fffaf2;
   border: 1px solid #0f1b2a;
+}
+
+.bookshelf {
+  width: 140px;
+  height: auto;
+}
+
+.library-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.library-message h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #243044;
+}
+
+.library-message p {
+  font-size: 1rem;
+  font-size: 1rem;
+  color: #3f4654;
 }
