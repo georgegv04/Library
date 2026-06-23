@@ -23,13 +23,6 @@ const library = {
 //   "Fyodor Dostoevsky",
 //   "885 pages",
 //   "Not read yet",
-// );
-// library.addBook(
-//   "To Kill a Mockingbird",
-//   "Harper Lee",
-//   "336 pages",
-//   "Not read yet",
-// );
 
 const libraryContainer = document.querySelector(".library-container");
 
@@ -89,6 +82,13 @@ cancelBtn.addEventListener("click", () => {
   modalOverlay.classList.remove("active");
 });
 
+const booksCount = document.createElement("div");
+booksCount.classList.add("books-count");
+booksCount.textContent = `${library.booksList.length} Books`;
+
+const libraryHeader = document.querySelector(".library-header");
+libraryHeader.appendChild(booksCount);
+
 const submitBookBtn = document.querySelector(".submit-book-btn");
 submitBookBtn.addEventListener("click", (event) => {
   event.preventDefault();
@@ -111,6 +111,12 @@ submitBookBtn.addEventListener("click", (event) => {
   }
 
   library.addBook(title, author, pages, readStatus);
+
+  if (library.booksList.length === 1) {
+    booksCount.textContent = `${library.booksList.length} Book`;
+  } else {
+    booksCount.textContent = `${library.booksList.length} Books`;
+  }
 
   const newBookCard = document.createElement("div");
   newBookCard.classList.add("book-card");
@@ -155,4 +161,6 @@ submitBookBtn.addEventListener("click", (event) => {
 
   modalOverlay.classList.remove("active");
   bookForm.reset();
+
+  console.log(library.booksList);
 });
