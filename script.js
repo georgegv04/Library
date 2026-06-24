@@ -12,61 +12,67 @@ const library = {
 };
 
 // library.addBook(
-//   "Ο Άγιος Παϊσιος ο Αγιορείτης",
-//   "Άγιος Παϊσιος",
-//   "665 pages",
-//   "Read",
-// );
-// library.addBook("Βίος και Λόγοι", "Άγιος Πορφύριος", "600 pages", "Read");
-// library.addBook(
 //   "The Brothers Karamazov",
 //   "Fyodor Dostoevsky",
-//   "885 pages",
+//   "600 pages",
 //   "Not read yet",
+// );
 
 const libraryContainer = document.querySelector(".library-container");
 
-for (let i = 0; i < library.booksList.length; i++) {
-  let bookCard = document.createElement("div");
-  bookCard.classList.add("book-card");
+// For Loop is only for DISPLAYING DEFAULT BOOKS:
 
-  let topGroup = document.createElement("div");
-  topGroup.classList.add("top-group");
+// for (let i = 0; i < library.booksList.length; i++) {
+//   let bookCard = document.createElement("div");
+//   bookCard.classList.add("book-card");
 
-  let bookTitle = document.createElement("div");
-  bookTitle.classList.add("book-title");
-  bookTitle.textContent = library.booksList[i].title;
-  topGroup.appendChild(bookTitle);
+//   let topGroup = document.createElement("div");
+//   topGroup.classList.add("top-group");
 
-  let bookAuthor = document.createElement("div");
-  bookAuthor.classList.add("book-author");
-  bookAuthor.textContent = library.booksList[i].author;
-  topGroup.appendChild(bookAuthor);
+//   let bookTitle = document.createElement("div");
+//   bookTitle.classList.add("book-title");
+//   bookTitle.textContent = library.booksList[i].title;
+//   topGroup.appendChild(bookTitle);
 
-  let bottomGroup = document.createElement("div");
-  bottomGroup.classList.add("bottom-group");
+//   let authorGroup = document.createElement("div");
+//   authorGroup.classList.add("author-group");
+//   topGroup.appendChild(authorGroup);
 
-  let bookPages = document.createElement("div");
-  bookPages.classList.add("book-pages");
-  bookPages.textContent = library.booksList[i].pages;
-  bottomGroup.appendChild(bookPages);
+// let authorIcon = document.createElement("img");
+// authorIcon.classList.add("author-icon");
+// authorIcon.src = "images/user.svg";
+// authorIcon.alt = "Author icon";
+// authorGroup.appendChild(authorIcon);
 
-  let bookStatus = document.createElement("div");
-  bookStatus.classList.add("book-status");
-  bookStatus.textContent = library.booksList[i].readStatus;
+//   let bookAuthor = document.createElement("div");
+//   bookAuthor.classList.add("book-author");
+//   bookAuthor.textContent = library.booksList[i].author;
+//   authorGroup.appendChild(bookAuthor);
 
-  if (library.booksList[i].readStatus === "Read") {
-    bookStatus.classList.add("status-read");
-  } else {
-    bookStatus.classList.add("status-not-read");
-  }
-  bottomGroup.appendChild(bookStatus);
+//   let bottomGroup = document.createElement("div");
+//   bottomGroup.classList.add("bottom-group");
 
-  bookCard.appendChild(topGroup);
-  bookCard.appendChild(bottomGroup);
+//   let bookPages = document.createElement("div");
+//   bookPages.classList.add("book-pages");
+//   bookPages.textContent = library.booksList[i].pages;
+//   bottomGroup.appendChild(bookPages);
 
-  libraryContainer.appendChild(bookCard);
-}
+//   let bookStatus = document.createElement("div");
+//   bookStatus.classList.add("book-status");
+//   bookStatus.textContent = library.booksList[i].readStatus;
+
+//   if (library.booksList[i].readStatus === "Read") {
+//     bookStatus.classList.add("status-read");
+//   } else {
+//     bookStatus.classList.add("status-not-read");
+//   }
+//   bottomGroup.appendChild(bookStatus);
+
+//   bookCard.appendChild(topGroup);
+//   bookCard.appendChild(bottomGroup);
+
+//   libraryContainer.appendChild(bookCard);
+// }
 
 // Code for hiding and displaying the form
 const modalOverlay = document.querySelector(".modal-overlay");
@@ -127,46 +133,58 @@ submitBookBtn.addEventListener("click", (event) => {
       "Your collection is growing. Add more books to build your personal library.";
   }
 
-  const newBookCard = document.createElement("div");
-  newBookCard.classList.add("book-card");
+  const bookCard = document.createElement("div");
+  bookCard.classList.add("book-card");
 
-  const newBookTitle = document.createElement("div");
-  newBookTitle.classList.add("book-title");
-  newBookTitle.textContent = title;
+  const bookTitle = document.createElement("div");
+  bookTitle.classList.add("book-title");
+  bookTitle.textContent = title;
 
-  const newBookAuthor = document.createElement("div");
-  newBookAuthor.classList.add("book-author");
-  newBookAuthor.textContent = author;
+  const bookAuthor = document.createElement("div");
+  bookAuthor.classList.add("book-author");
+  bookAuthor.textContent = author;
 
-  const newBookPages = document.createElement("div");
-  newBookPages.classList.add("book-pages");
-  newBookPages.textContent = pages;
+  const bookPages = document.createElement("div");
+  bookPages.classList.add("book-pages");
+  bookPages.textContent = pages;
 
-  const newBookStatus = document.createElement("div");
-  newBookStatus.classList.add("book-status");
-  newBookStatus.textContent = readStatus;
+  const bookStatus = document.createElement("div");
+  bookStatus.classList.add("book-status");
+  bookStatus.textContent = readStatus;
 
   if (readStatus === "Read") {
-    newBookStatus.classList.add("status-read");
+    bookStatus.classList.add("status-read");
   } else {
-    newBookStatus.classList.add("status-not-read");
+    bookStatus.classList.add("status-not-read");
   }
 
   const topGroup = document.createElement("div");
   topGroup.classList.add("top-group");
-  topGroup.appendChild(newBookTitle);
-  topGroup.appendChild(newBookAuthor);
+  topGroup.appendChild(bookTitle);
 
-  newBookCard.appendChild(topGroup);
+  const authorIcon = document.createElement("img");
+  authorIcon.classList.add("author-icon");
+  authorIcon.src = "images/user.svg";
+  authorIcon.alt = "Author icon";
+
+  const authorGroup = document.createElement("div");
+  authorGroup.classList.add("author-group");
+
+  authorGroup.appendChild(authorIcon);
+  authorGroup.appendChild(bookAuthor);
+
+  topGroup.appendChild(authorGroup);
+
+  bookCard.appendChild(topGroup);
 
   const bottomGroup = document.createElement("div");
   bottomGroup.classList.add("bottom-group");
-  bottomGroup.appendChild(newBookPages);
-  bottomGroup.appendChild(newBookStatus);
+  bottomGroup.appendChild(bookPages);
+  bottomGroup.appendChild(bookStatus);
 
-  newBookCard.appendChild(bottomGroup);
+  bookCard.appendChild(bottomGroup);
 
-  libraryContainer.appendChild(newBookCard);
+  libraryContainer.appendChild(bookCard);
 
   modalOverlay.classList.remove("active");
   bookForm.reset();

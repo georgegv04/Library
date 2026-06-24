@@ -97,10 +97,21 @@ header {
 .top-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
   min-height: 100px;
   padding-bottom: 18px;
   border-bottom: 1px solid #e6dccd;
+}
+
+.author-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.author-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .bottom-group {
