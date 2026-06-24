@@ -114,6 +114,17 @@ header {
   height: 18px;
 }
 
+.pages-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pages-icon {
+  width: 18px;
+  height: 18px;
+}
+
 .bottom-group {
   display: flex;
   flex-direction: column;
@@ -133,7 +144,7 @@ header {
 }
 
 .book-pages {
-  color: #172033;
+  color: #6b6b6b;
   font-size: 0.95rem;
 }
 

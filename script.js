@@ -179,7 +179,19 @@ submitBookBtn.addEventListener("click", (event) => {
 
   const bottomGroup = document.createElement("div");
   bottomGroup.classList.add("bottom-group");
-  bottomGroup.appendChild(bookPages);
+
+  const pagesIcon = document.createElement("img");
+  pagesIcon.classList.add("pages-icon");
+  pagesIcon.src = "images/pages.svg";
+  pagesIcon.alt = "Pages icon";
+
+  const pagesGroup = document.createElement("div");
+  pagesGroup.classList.add("pages-group");
+
+  pagesGroup.appendChild(pagesIcon);
+  pagesGroup.appendChild(bookPages);
+
+  bottomGroup.appendChild(pagesGroup);
   bottomGroup.appendChild(bookStatus);
 
   bookCard.appendChild(bottomGroup);
