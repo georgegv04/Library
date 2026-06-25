@@ -143,6 +143,17 @@ header {
   margin-top: auto;
 }
 
+.actions-group {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bin-icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
 .book-title {
   color: #172033;
   font-size: 1.4rem;

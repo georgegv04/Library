@@ -3,6 +3,7 @@ const library = {
 
   addBook(title, author, pages, readStatus) {
     this.booksList.push({
+      id: Date.now(),
       title,
       author,
       pages,
@@ -10,13 +11,6 @@ const library = {
     });
   },
 };
-
-// library.addBook(
-//   "The Brothers Karamazov",
-//   "Fyodor Dostoevsky",
-//   "600 pages",
-//   "Not read yet",
-// );
 
 const libraryContainer = document.querySelector(".library-container");
 
@@ -120,6 +114,7 @@ submitBookBtn.addEventListener("click", (event) => {
   }
 
   library.addBook(title, author, pages, readStatus);
+  const currentBook = library.booksList[library.booksList.length - 1];
 
   if (library.booksList.length === 1) {
     booksCount.textContent = `${library.booksList.length} Book`;
@@ -190,8 +185,6 @@ submitBookBtn.addEventListener("click", (event) => {
 
   topGroup.appendChild(authorGroup);
 
-  bookCard.appendChild(topGroup);
-
   const bottomGroup = document.createElement("div");
   bottomGroup.classList.add("bottom-group");
 
@@ -206,15 +199,51 @@ submitBookBtn.addEventListener("click", (event) => {
   pagesGroup.appendChild(pagesIcon);
   pagesGroup.appendChild(bookPages);
 
-  bottomGroup.appendChild(pagesGroup);
+  topGroup.appendChild(pagesGroup);
+
   bottomGroup.appendChild(bookStatus);
 
+  const actionsGroup = document.createElement("div");
+  actionsGroup.classList.add("actions-group");
+
+  const binIcon = document.createElement("img");
+  binIcon.classList.add("bin-icon");
+  binIcon.src = "images/bin-icon.svg";
+  binIcon.alt = "Bin icon";
+
+  // Create Bin Listener to remove the card:
+  binIcon.addEventListener("click", () => {
+    bookCard.remove();
+    library.booksList.splice(currentBook, 1);
+
+    if (library.booksList.length === 1) {
+      booksCount.textContent = `${library.booksList.length} Book`;
+    } else {
+      booksCount.textContent = `${library.booksList.length} Books`;
+    }
+
+    if (library.booksList.length === 0) {
+      libraryMessageTitle.textContent = "Your library is empty!";
+      libraryMessageText.textContent =
+        "Add your first book to start building your collection.";
+    } else {
+      libraryMessageTitle.textContent = "Keep adding to your library!";
+      libraryMessageTitle.textContent =
+        "Your collection is growing. Add more books to build your personal library.";
+    }
+  });
+
+  actionsGroup.appendChild(binIcon);
+
+  bottomGroup.appendChild(actionsGroup);
+
+  bookCard.appendChild(topGroup);
   bookCard.appendChild(bottomGroup);
 
   libraryContainer.appendChild(bookCard);
 
   modalOverlay.classList.remove("active");
   bookForm.reset();
-
-  console.log(library.booksList);
 });
+
+const binIcon = document.querySelector(".bin-icon");
