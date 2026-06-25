@@ -116,7 +116,7 @@ submitBookBtn.addEventListener("click", (event) => {
   if (readStatus === true) {
     readStatus = "Read";
   } else {
-    readStatus = "Not read yet";
+    readStatus = "Not read";
   }
 
   library.addBook(title, author, pages, readStatus);
@@ -150,7 +150,22 @@ submitBookBtn.addEventListener("click", (event) => {
 
   const bookStatus = document.createElement("div");
   bookStatus.classList.add("book-status");
-  bookStatus.textContent = readStatus;
+
+  const statusIcon = document.createElement("img");
+  statusIcon.classList.add("status-icon");
+
+  const statusText = document.createElement("span");
+  statusText.classList.add("status-text");
+  statusText.textContent = readStatus;
+
+  if (readStatus === "Read") {
+    statusIcon.src = "images/read-status.svg";
+  } else {
+    statusIcon.src = "images/not-read-status.svg";
+  }
+
+  bookStatus.appendChild(statusIcon);
+  bookStatus.appendChild(statusText);
 
   if (readStatus === "Read") {
     bookStatus.classList.add("status-read");
