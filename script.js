@@ -14,7 +14,7 @@ const library = {
 
 const libraryContainer = document.querySelector(".library-container");
 
-// For Loop is only for DISPLAYING DEFAULT BOOKS:
+// For Loop need if I want to DISPLAY DEFAULT BOOKS:
 
 // for (let i = 0; i < library.booksList.length; i++) {
 //   let bookCard = document.createElement("div");
@@ -68,7 +68,6 @@ const libraryContainer = document.querySelector(".library-container");
 //   libraryContainer.appendChild(bookCard);
 // }
 
-// Code for hiding and displaying the form
 const modalOverlay = document.querySelector(".modal-overlay");
 const addNewBookBtn = document.querySelector(".add-new-book-btn");
 const cancelBtn = document.querySelector(".cancel-btn");
@@ -201,20 +200,22 @@ submitBookBtn.addEventListener("click", (event) => {
 
   topGroup.appendChild(pagesGroup);
 
-  bottomGroup.appendChild(bookStatus);
-
-  const actionsGroup = document.createElement("div");
-  actionsGroup.classList.add("actions-group");
+  const deleteBtn = document.createElement("button");
+  deleteBtn.classList.add("delete-btn");
 
   const binIcon = document.createElement("img");
   binIcon.classList.add("bin-icon");
   binIcon.src = "images/bin-icon.svg";
   binIcon.alt = "Bin icon";
 
-  // Create Bin Listener to remove the card:
-  binIcon.addEventListener("click", () => {
+  deleteBtn.addEventListener("click", () => {
     bookCard.remove();
-    library.booksList.splice(currentBook, 1);
+
+    const bookIndex = library.booksList.findIndex(
+      (book) => book.id === currentBook.id,
+    );
+
+    library.booksList.splice(bookIndex, 1);
 
     if (library.booksList.length === 1) {
       booksCount.textContent = `${library.booksList.length} Book`;
@@ -228,14 +229,15 @@ submitBookBtn.addEventListener("click", (event) => {
         "Add your first book to start building your collection.";
     } else {
       libraryMessageTitle.textContent = "Keep adding to your library!";
-      libraryMessageTitle.textContent =
+      libraryMessageText.textContent =
         "Your collection is growing. Add more books to build your personal library.";
     }
   });
 
-  actionsGroup.appendChild(binIcon);
+  deleteBtn.appendChild(binIcon);
 
-  bottomGroup.appendChild(actionsGroup);
+  bottomGroup.appendChild(bookStatus);
+  bottomGroup.appendChild(deleteBtn);
 
   bookCard.appendChild(topGroup);
   bookCard.appendChild(bottomGroup);
@@ -245,5 +247,3 @@ submitBookBtn.addEventListener("click", (event) => {
   modalOverlay.classList.remove("active");
   bookForm.reset();
 });
-
-const binIcon = document.querySelector(".bin-icon");
