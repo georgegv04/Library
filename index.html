@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Library</title>
 
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css?v=13" />
+    <script src="script.js?v=12" defer></script>
   </head>
 
   <body>
@@ -79,6 +79,17 @@
             />
           </div>
 
+          <div class="form-group">
+            <label for="cover-url">Custom Cover URL <span>(optional)</span></label>
+
+            <input
+              type="url"
+              id="cover-url"
+              name="cover-url"
+              placeholder="Leave blank to find a cover automatically"
+            />
+          </div>
+
           <div class="checkbox-group">
             <input type="checkbox" id="read-status" name="read-status" />
 
@@ -143,6 +154,32 @@
             />
           </div>
 
+          <div class="form-group">
+            <label for="edit-rating">Your Rating</label>
+
+            <select id="edit-rating" name="edit-rating">
+              <option value="0">Not rated</option>
+              <option value="1">★ 1 star</option>
+              <option value="2">★★ 2 stars</option>
+              <option value="3">★★★ 3 stars</option>
+              <option value="4">★★★★ 4 stars</option>
+              <option value="5">★★★★★ 5 stars</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-cover-url">
+              Custom Cover URL <span>(optional)</span>
+            </label>
+
+            <input
+              type="url"
+              id="edit-cover-url"
+              name="edit-cover-url"
+              placeholder="Paste a cover URL to replace the current cover"
+            />
+          </div>
+
           <div class="checkbox-group">
             <input
               type="checkbox"
@@ -159,6 +196,90 @@
             <button type="submit" class="save-edit-btn">Save Changes</button>
           </div>
         </form>
+      </div>
+
+      <!-- Book Details Modal -->
+      <div class="details-modal-overlay">
+        <article class="details-modal" aria-labelledby="details-title">
+          <div class="details-modal-header">
+            <p class="details-eyebrow">Book details</p>
+
+            <button
+              type="button"
+              class="close-details-btn"
+              aria-label="Close book details"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div class="details-content">
+            <img class="details-cover" src="" alt="" />
+
+            <div class="details-information">
+              <h2 id="details-title" class="details-title"></h2>
+              <p class="details-author"></p>
+
+              <dl class="details-list">
+                <div>
+                  <dt>Pages</dt>
+                  <dd class="details-pages"></dd>
+                </div>
+
+                <div>
+                  <dt>Reading status</dt>
+                  <dd class="details-status"></dd>
+                </div>
+
+                <div>
+                  <dt>Date added</dt>
+                  <dd class="details-date"></dd>
+                </div>
+
+                <div class="details-rating-item">
+                  <dt>Your rating</dt>
+                  <dd class="details-rating-display" aria-label="Not rated">
+                    <span>★</span>
+                    <span>★</span>
+                    <span>★</span>
+                    <span>★</span>
+                    <span>★</span>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <section class="details-description-section">
+            <h3>About this book</h3>
+            <p class="details-description"></p>
+          </section>
+        </article>
+      </div>
+
+      <!-- Quick Rating Modal -->
+      <div class="rating-modal-overlay">
+        <section class="rating-modal" aria-labelledby="rating-modal-title">
+          <button
+            type="button"
+            class="close-rating-btn"
+            aria-label="Close rating"
+          >
+            &times;
+          </button>
+
+          <p class="rating-modal-eyebrow">Your rating</p>
+          <h2 id="rating-modal-title" class="rating-modal-title"></h2>
+          <p class="rating-modal-help">Choose from 1 to 5 stars</p>
+
+          <div class="quick-rating-control" aria-label="Choose book rating">
+            <button type="button" data-rating="1" aria-label="1 star">★</button>
+            <button type="button" data-rating="2" aria-label="2 stars">★</button>
+            <button type="button" data-rating="3" aria-label="3 stars">★</button>
+            <button type="button" data-rating="4" aria-label="4 stars">★</button>
+            <button type="button" data-rating="5" aria-label="5 stars">★</button>
+          </div>
+        </section>
       </div>
 
       <div class="library-message">
