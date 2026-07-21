@@ -4,27 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Library</title>
+
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
+
   <body>
     <header>
       <div class="header-brand">
         <img
           class="library-header-icon"
           src="images/open-book1.svg"
-          alt="open-book"
+          alt="Open book"
         />
+
         <h1 class="page-title">My Library</h1>
       </div>
-      <button class="add-new-book-btn">+ Add New Book</button>
+
+      <button type="button" class="add-new-book-btn">+ Add New Book</button>
     </header>
+
     <main>
       <div class="library-header">
         <img
           class="three-books-icon"
           src="images/three-books.svg"
-          alt="3 books"
+          alt="Books"
         />
 
         <h2 class="books-section-title">Your Books</h2>
@@ -32,51 +37,135 @@
 
       <div class="library-container"></div>
 
+      <!-- Add Book Modal -->
       <div class="modal-overlay">
         <form class="book-form">
           <h2 class="form-title">Add New Book</h2>
 
           <div class="form-group">
             <label for="title">Book Title</label>
+
             <input
               type="text"
               id="title"
               name="title"
               placeholder="The Brothers Karamazov"
+              required
             />
           </div>
+
           <div class="form-group">
             <label for="author">Author</label>
+
             <input
               type="text"
               id="author"
               name="author"
               placeholder="Fyodor Dostoevsky"
+              required
             />
           </div>
+
           <div class="form-group">
             <label for="pages">Pages</label>
+
             <input
-              type="text"
+              type="number"
               id="pages"
               name="pages"
-              placeholder="885 pages"
+              placeholder="885"
+              min="1"
+              required
             />
           </div>
+
           <div class="checkbox-group">
             <input type="checkbox" id="read-status" name="read-status" />
-            <label for="read-status">I have read this book</label>
+
+            <label for="read-status"> I have read this book </label>
           </div>
+
           <div class="button-container">
             <button type="button" class="cancel-btn">Cancel</button>
+
             <button type="submit" class="submit-book-btn">Add Book</button>
           </div>
         </form>
       </div>
 
+      <!-- Edit Book Modal -->
+      <div class="edit-modal-overlay">
+        <form class="edit-book-form">
+          <div class="edit-form-header">
+            <h2 class="form-title">Edit Book</h2>
+
+            <button
+              type="button"
+              class="close-edit-btn"
+              aria-label="Close edit form"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-title">Book Title</label>
+
+            <input type="text" id="edit-title" name="edit-title" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-author">Author</label>
+
+            <input type="text" id="edit-author" name="edit-author" required />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-pages">Pages</label>
+
+            <input
+              type="number"
+              id="edit-pages"
+              name="edit-pages"
+              min="1"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-date-added">Date Added</label>
+
+            <input
+              type="date"
+              id="edit-date-added"
+              name="edit-date-added"
+              required
+            />
+          </div>
+
+          <div class="checkbox-group">
+            <input
+              type="checkbox"
+              id="edit-read-status"
+              name="edit-read-status"
+            />
+
+            <label for="edit-read-status"> I have read this book </label>
+          </div>
+
+          <div class="button-container">
+            <button type="button" class="cancel-edit-btn">Cancel</button>
+
+            <button type="submit" class="save-edit-btn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+
       <div class="library-message">
-        <img class="bookshelf" src="images/shelf.png" alt="bookshelf" />
+        <img class="bookshelf" src="images/shelf.png" alt="Bookshelf" />
+
         <h3 class="library-message-title">Your library is empty!</h3>
+
         <p class="library-message-text">
           Add your first book to start building your collection.
         </p>

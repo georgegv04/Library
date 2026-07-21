@@ -7,6 +7,12 @@
 body {
   min-height: 100vh;
   background-color: #f6f1e8;
+  color: #172033;
+}
+
+button,
+input {
+  font: inherit;
 }
 
 header {
@@ -29,41 +35,22 @@ header {
   height: 40px;
 }
 
-.three-books-icon {
-  width: 34px;
-  height: 34px;
-}
-
-.books-section-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #172033;
-  line-height: 1;
-  letter-spacing: 0.5px;
-}
-
-.books-count {
-  padding: 8px 14px;
-  border-radius: 8px;
-  background-color: #eee3d2;
-  color: #6f6254;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
 .page-title {
-  font-size: 2rem;
   color: #f8f3ea;
+  font-size: 2rem;
   letter-spacing: 0.5px;
 }
 
 .add-new-book-btn {
   padding: 12px 22px;
-  border-radius: 6px;
-  font-weight: 700;
+
   border: 0;
+  border-radius: 6px;
+
   background-color: #e8c48f;
   color: #182233;
+
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -75,141 +62,103 @@ header {
   display: flex;
   align-items: center;
   gap: 14px;
+
   padding: 48px 48px 0;
 }
 
-/* Updated to allow wider cards with covers */
+.three-books-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.books-section-title {
+  color: #172033;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.5px;
+}
+
+.books-count {
+  padding: 8px 14px;
+
+  border-radius: 8px;
+
+  background-color: #eee3d2;
+  color: #6f6254;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
 .library-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(420px, 520px));
+  justify-content: start;
   gap: 24px;
 
   width: 100%;
   max-width: 1500px;
+
   margin: 0 auto;
   padding: 36px 64px;
 }
 
-/* Updated card */
 .book-card {
+  padding: 22px;
+
+  border-radius: 10px;
+
   background-color: #fffaf2;
   color: #172033;
-  padding: 22px;
-  border-radius: 10px;
+
   box-shadow: 0 8px 20px rgba(15, 27, 42, 0.12);
 }
 
-/* New wrapper for cover + information */
 .book-main {
   display: grid;
   grid-template-columns: 150px minmax(0, 1fr);
   gap: 24px;
+
   height: 100%;
 }
 
-/* New book cover styles */
 .book-cover {
   display: block;
+
   width: 150px;
   height: 225px;
 
-  object-fit: cover;
   border-radius: 5px;
+
+  object-fit: cover;
   background-color: #eee3d2;
+
   box-shadow: 0 6px 14px rgba(15, 27, 42, 0.2);
 }
 
-/* New wrapper for title, details and buttons */
 .book-information {
   display: flex;
   flex-direction: column;
+
   min-width: 0;
 }
 
-/* Updated */
 .top-group {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 16px;
-  flex: 1;
+
   min-height: 0;
   padding-bottom: 18px;
+
   border-bottom: 1px dotted #e6dccd;
-}
-
-.author-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.author-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
-.pages-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.pages-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
-.book-status {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  width: fit-content;
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
-.status-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.bottom-group {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-
-  margin-top: 18px;
-}
-
-.delete-btn {
-  display: grid;
-  place-items: center;
-
-  width: 38px;
-  height: 38px;
-  border: none;
-  border-radius: 50%;
-  background-color: #fde8e6;
-  cursor: pointer;
-}
-
-.delete-btn:hover {
-  filter: brightness(0.96);
-}
-
-.bin-icon {
-  width: 22px;
-  height: 22px;
 }
 
 .book-title {
   color: #172033;
+
   font-size: 1.4rem;
   font-weight: 700;
   line-height: 1.2;
@@ -217,8 +166,24 @@ header {
   overflow-wrap: anywhere;
 }
 
+.author-group,
+.pages-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.author-icon,
+.pages-icon {
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+}
+
 .book-author {
   color: #6b6b6b;
+
   font-size: 1rem;
   line-height: 1.4;
 }
@@ -228,42 +193,212 @@ header {
   font-size: 0.95rem;
 }
 
+.book-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: fit-content;
+  padding: 8px 14px;
+
+  border-radius: 10px;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.status-icon {
+  width: 18px;
+  height: 18px;
+}
+
 .status-read {
-  color: #2e7d32;
   background-color: #e4f3e6;
+  color: #2e7d32;
 }
 
 .status-not-read {
-  color: #b8322c;
   background-color: #fbe3e1;
+  color: #b8322c;
 }
 
-.book-form {
+.bottom-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-top: 18px;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.edit-btn {
+  background-color: #eee3d2;
+}
+
+.edit-btn:hover {
+  background-color: #e5d5bd;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  box-shadow: 0 4px 10px rgba(15, 27, 42, 0.12);
+  transform: translateY(-1px);
+}
+
+.edit-btn:active,
+.delete-btn:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.edit-btn:focus-visible,
+.delete-btn:focus-visible {
+  outline: 3px solid #e8c48f;
+  outline-offset: 3px;
+}
+
+.edit-icon {
+  display: block;
+
+  width: 18px;
+  height: 18px;
+
+  object-fit: contain;
+}
+
+.delete-btn {
+  background-color: #fde8e6;
+}
+
+.delete-btn:hover {
+  background-color: #fbd9d6;
+}
+
+.bin-icon {
+  display: block;
+
+  width: 20px;
+  height: 20px;
+
+  object-fit: contain;
+}
+
+.modal-overlay,
+.edit-modal-overlay {
+  display: none;
+
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+
+  place-items: center;
+
+  padding: 24px;
+
+  background-color: rgba(15, 27, 42, 0.55);
+}
+
+.modal-overlay.active,
+.edit-modal-overlay.active {
+  display: grid;
+}
+
+.book-form,
+.edit-book-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
 
   width: 100%;
-  max-width: 460px;
+  max-width: 500px;
+  max-height: calc(100vh - 48px);
+
+  overflow-y: auto;
+
   padding: 28px;
-  background-color: #fffaf2;
+
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(15, 27, 42, 0.12);
+
+  background-color: #fffaf2;
+
+  box-shadow: 0 14px 35px rgba(15, 27, 42, 0.25);
 }
 
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-
-  place-items: center;
-  padding: 24px;
-  background-color: rgba(15, 27, 42, 0.45);
+.edit-book-form {
+  max-width: 540px;
+  gap: 20px;
 }
 
-.modal-overlay.active {
+.edit-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.form-title {
+  margin-bottom: 8px;
+
+  color: #172033;
+
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.edit-form-header .form-title {
+  margin-bottom: 0;
+}
+
+.close-edit-btn {
   display: grid;
+  place-items: center;
+
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  border: 1px solid #d6c6a8;
+  border-radius: 6px;
+
+  background-color: #fffaf2;
+  color: #172033;
+
+  font-size: 1.8rem;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.close-edit-btn:hover {
+  background-color: #f5ecdf;
 }
 
 .form-group {
@@ -272,26 +407,29 @@ header {
   gap: 8px;
 }
 
+.form-group label {
+  color: #172033;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
 .form-group input {
   width: 100%;
   padding: 14px 16px;
 
   border: 1px solid #d6c6a8;
   border-radius: 6px;
+
+  background-color: #fffdf8;
+  color: #172033;
+
   font-size: 1rem;
 }
 
-.form-title {
-  margin-bottom: 8px;
-  color: #172033;
-  font-size: 2rem;
-  font-weight: 800;
-}
-
-.form-group label {
-  color: #172033;
-  font-size: 0.95rem;
-  font-weight: 700;
+.form-group input:focus {
+  outline: 2px solid #e8c48f;
+  outline-offset: 2px;
 }
 
 .checkbox-group {
@@ -300,48 +438,59 @@ header {
   gap: 8px;
 }
 
-.checkbox-group label {
-  color: #172033;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
 .checkbox-group input {
   width: 16px;
   height: 16px;
+
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  color: #172033;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
   cursor: pointer;
 }
 
 .button-container {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: flex-end;
   gap: 14px;
 }
 
 .button-container > button {
   padding: 12px 18px;
+
   border: 0;
   border-radius: 6px;
+
   font-size: 1rem;
   font-weight: 700;
+
   cursor: pointer;
 }
 
-.button-container > button:first-child {
-  color: #172033;
+.cancel-btn,
+.cancel-edit-btn {
+  border: 1px solid #d6c6a8 !important;
+
   background-color: #fffaf2;
-  border: 1px solid #d6c6a8;
+  color: #172033;
 }
 
-.button-container > button:nth-child(2) {
-  color: #fffaf2;
+.submit-book-btn,
+.save-edit-btn {
+  border: 1px solid #0f1b2a !important;
+
   background-color: #0f1b2a;
-  border: 1px solid #0f1b2a;
+  color: #fffaf2;
 }
 
-.submit-book-btn:disabled {
+.submit-book-btn:disabled,
+.save-edit-btn:disabled {
   opacity: 0.65;
   cursor: wait;
 }
@@ -354,16 +503,18 @@ header {
 .library-message {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 12px;
 
   padding: 0 24px 40px;
+
   text-align: center;
 }
 
 .library-message h3 {
   color: #243044;
+
   font-size: 1.4rem;
   font-weight: 800;
 }
@@ -373,10 +524,10 @@ header {
   font-size: 1rem;
 }
 
-/* Tablet */
 @media (max-width: 1000px) {
   .library-container {
     grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+
     padding: 32px 40px;
   }
 
@@ -391,7 +542,6 @@ header {
   }
 }
 
-/* Mobile */
 @media (max-width: 600px) {
   header {
     padding: 20px 24px;
@@ -421,6 +571,7 @@ header {
 
   .library-container {
     grid-template-columns: 1fr;
+
     padding: 28px 24px;
   }
 
@@ -455,9 +606,23 @@ header {
     padding: 7px 10px;
     font-size: 0.85rem;
   }
+
+  .book-form,
+  .edit-book-form {
+    padding: 22px;
+  }
+
+  .bottom-group {
+    align-items: center;
+  }
+
+  .card-actions {
+    flex-direction: row;
+    align-items: center;
+  }
+
 }
 
-/* Very small screens */
 @media (max-width: 420px) {
   .header-brand {
     gap: 10px;
@@ -478,6 +643,16 @@ header {
   .book-cover {
     width: 140px;
     height: 210px;
+
     justify-self: center;
+  }
+
+  .bottom-group {
+    align-items: center;
+  }
+
+  .card-actions {
+    flex-direction: row;
+    align-items: center;
   }
 }
