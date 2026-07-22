@@ -21,55 +21,55 @@ function getStoredBooks() {
 }
 
 const library = {
-  booksList: getStoredBooks(),
+  booksList: [],
 
-  addBook(title, author, pages, readStatus, coverUrl, description = null) {
-    const newBook = {
-      id: crypto.randomUUID(),
-      title,
-      author,
-      pages,
-      readStatus,
-      coverUrl,
-      description,
-      descriptionVersion: description ? 2 : null,
-      rating: 0,
-      dateAdded: getTodayDate(),
-    };
-
-    this.booksList.push(newBook);
-    this.saveBooks();
-
-    return newBook;
+  async addBook(title, author, pages, readStatus, coverUrl, description = null) {
+    const result = await apiRequest("/api/books", {
+      method: "POST",
+      body: JSON.stringify({ title, author, pages, readStatus, coverUrl, description, rating: 0, dateAdded: getTodayDate() }),
+    });
+    this.booksList.unshift(result.book);
+    return result.book;
   },
 
-  updateBook(bookId, updatedValues) {
+  async updateBook(bookId, updatedValues) {
     const bookIndex = this.booksList.findIndex((book) => book.id === bookId);
 
     if (bookIndex === -1) {
       return false;
     }
 
-    this.booksList[bookIndex] = {
+    const updatedBook = {
       ...this.booksList[bookIndex],
       ...updatedValues,
     };
-
-    this.saveBooks();
-
+    const result = await apiRequest(`/api/books/${encodeURIComponent(bookId)}`, {
+      method: "PUT",
+      body: JSON.stringify(updatedBook),
+    });
+    this.booksList[bookIndex] = result.book;
     return true;
   },
 
-  removeBook(bookId) {
+  async removeBook(bookId) {
+    await apiRequest(`/api/books/${encodeURIComponent(bookId)}`, { method: "DELETE" });
     this.booksList = this.booksList.filter((book) => book.id !== bookId);
-
-    this.saveBooks();
-  },
-
-  saveBooks() {
-    localStorage.setItem("libraryBooks", JSON.stringify(this.booksList));
   },
 };
+
+async function apiRequest(url, options = {}) {
+  const response = await fetch(url, {
+    ...options,
+    headers: { "Content-Type": "application/json", ...options.headers },
+  });
+  if (response.status === 401) {
+    location.href = "/login";
+    throw new Error("Please log in to continue.");
+  }
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || "Something went wrong.");
+  return result;
+}
 
 const libraryContainer = document.querySelector(".library-container");
 
@@ -79,6 +79,8 @@ const detailsModalOverlay = document.querySelector(".details-modal-overlay");
 const ratingModalOverlay = document.querySelector(".rating-modal-overlay");
 
 const addNewBookBtn = document.querySelector(".add-new-book-btn");
+const accountName = document.querySelector(".account-name");
+const logoutBtn = document.querySelector(".logout-btn");
 
 const cancelBtn = document.querySelector(".cancel-btn");
 const cancelEditBtn = document.querySelector(".cancel-edit-btn");
@@ -263,7 +265,7 @@ async function openDetailsModal(book) {
   const description = await getBookDescription(book.title, book.author);
   const finalDescription = description || getFallbackDescription(book);
 
-  library.updateBook(book.id, {
+  await library.updateBook(book.id, {
     description: finalDescription,
     descriptionVersion: 2,
   });
@@ -288,7 +290,7 @@ closeDetailsBtn.addEventListener("click", closeDetailsModal);
 closeRatingBtn.addEventListener("click", closeRatingModal);
 
 quickRatingButtons.forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     const book = library.booksList.find(
       (currentBook) => currentBook.id === ratingBookId,
     );
@@ -299,7 +301,7 @@ quickRatingButtons.forEach((button) => {
 
     const rating = Number(button.dataset.rating);
 
-    library.updateBook(book.id, { rating });
+    await library.updateBook(book.id, { rating });
     renderLibrary();
     closeRatingModal();
   });
@@ -991,8 +993,8 @@ function createBookCard(book) {
 
   deleteBtn.appendChild(binIcon);
 
-  deleteBtn.addEventListener("click", () => {
-    library.removeBook(book.id);
+  deleteBtn.addEventListener("click", async () => {
+    await library.removeBook(book.id);
     renderLibrary();
   });
 
@@ -1054,7 +1056,7 @@ bookForm.addEventListener("submit", async (event) => {
   try {
     const coverUrl = customCoverUrl || (await getBookCover(title, author));
 
-    library.addBook(title, author, pages, readStatus, coverUrl);
+    await library.addBook(title, author, pages, readStatus, coverUrl);
 
     renderLibrary();
     closeAddModal();
@@ -1125,7 +1127,7 @@ editBookForm.addEventListener("submit", async (event) => {
       );
     }
 
-    library.updateBook(editingBookId, {
+    await library.updateBook(editingBookId, {
       title: updatedTitle,
       author: updatedAuthor,
       pages: updatedPages,
@@ -1159,5 +1161,37 @@ function renderLibrary() {
   updateLibraryInfo();
 }
 
-library.saveBooks();
-renderLibrary();
+async function importLocalBooks(userId) {
+  const migrationKey = `libraryBooksImported:${userId}`;
+  if (localStorage.getItem(migrationKey)) return;
+  const localBooks = getStoredBooks();
+  if (localBooks.length) {
+    await Promise.all(localBooks.map((book) => apiRequest("/api/books", {
+      method: "POST",
+      body: JSON.stringify(book),
+    })));
+    localStorage.removeItem("libraryBooks");
+  }
+  localStorage.setItem(migrationKey, "true");
+}
+
+logoutBtn.addEventListener("click", async () => {
+  logoutBtn.disabled = true;
+  await apiRequest("/api/auth/logout", { method: "POST" });
+  location.href = "/login";
+});
+
+async function initializeLibrary() {
+  try {
+    const { user } = await apiRequest("/api/auth/me");
+    accountName.textContent = user.name;
+    await importLocalBooks(user.id);
+    const result = await apiRequest("/api/books");
+    library.booksList = result.books;
+    renderLibrary();
+  } catch (error) {
+    console.error("Could not load your library:", error);
+  }
+}
+
+initializeLibrary();

@@ -5,10 +5,12 @@
   "description": "A calm, beautifully organized personal library.",
   "type": "module",
   "scripts": {
+    "db:init": "node database.js",
     "start": "node server.js",
+    "test": "node --test",
     "dev": "node --watch server.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.5"
   }
 }

@@ -1,0 +1,25 @@
+:root { --navy: #0b1926; --cream: #f6f1e8; --gold: #d8b46a; --ink: #172033; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: var(--navy) url("images/botanical-background.png") center/cover; color: var(--cream); font-family: Georgia, "Times New Roman", serif; }
+body::before { position: fixed; inset: 0; background: rgba(7, 18, 28, .76); content: ""; }
+.brand { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 12px; margin: 28px clamp(24px, 5vw, 72px); color: white; font-weight: 700; text-decoration: none; }
+.brand-mark { display: grid; width: 42px; height: 42px; border: 1px solid rgba(216,180,106,.6); border-radius: 50%; place-items: center; }
+.brand-mark img { width: 25px; filter: brightness(0) invert(1); }
+main { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 480px); align-items: center; gap: clamp(45px, 8vw, 130px); max-width: 1250px; min-height: calc(100vh - 120px); margin: auto; padding: 30px clamp(24px, 5vw, 72px) 80px; }
+.eyebrow { color: var(--gold); font: 700 .75rem Arial, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.welcome h1 { max-width: 690px; margin: 18px 0 25px; font-size: clamp(3rem, 6vw, 5.7rem); font-weight: 400; line-height: .98; }
+.welcome > p:last-child { max-width: 510px; color: rgba(255,255,255,.7); font: 1.05rem/1.7 Arial, sans-serif; }
+.auth-card { padding: 36px; border: 1px solid rgba(216,180,106,.32); border-radius: 12px; background: rgba(250,246,238,.97); color: var(--ink); box-shadow: 0 30px 80px rgba(0,0,0,.3); }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 30px; border-bottom: 1px solid #d9cfbf; }
+.tabs button { padding: 12px; border: 0; border-bottom: 2px solid transparent; background: none; color: #766c60; cursor: pointer; }
+.tabs button.active { border-color: #9d7137; color: var(--ink); font-weight: 700; }
+h2 { margin: 0 0 8px; font-size: 2rem; }
+#form-intro { margin: 0 0 25px; color: #6c6257; font: .9rem/1.5 Arial, sans-serif; }
+label { display: grid; gap: 8px; margin: 16px 0; font: 700 .82rem Arial, sans-serif; }
+input { width: 100%; padding: 13px 14px; border: 1px solid #cfc3b2; border-radius: 5px; background: #fffdf8; font: 1rem Arial, sans-serif; }
+input:focus { outline: 2px solid rgba(157,113,55,.28); border-color: #9d7137; }
+small { color: #817568; font-weight: 400; }
+.form-message { min-height: 20px; margin: 10px 0; color: #a0302c; font: .85rem Arial, sans-serif; }
+.submit-button { width: 100%; padding: 14px 20px; border: 0; border-radius: 5px; background: var(--navy); color: white; font-weight: 700; cursor: pointer; }
+.submit-button:disabled { opacity: .65; cursor: wait; }
+@media (max-width: 800px) { main { grid-template-columns: 1fr; padding-top: 10px; } .welcome h1 { font-size: 3rem; } .auth-card { padding: 26px; } }

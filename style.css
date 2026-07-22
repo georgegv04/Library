@@ -64,6 +64,11 @@ main::before {
   letter-spacing: 0.5px;
 }
 
+.account-actions { display: flex; align-items: center; gap: 14px; }
+.account-name { color: #f8f3ea; font-weight: 700; }
+.logout-btn { padding: 10px 14px; border: 1px solid rgba(248,243,234,.42); border-radius: 6px; background: transparent; color: #f8f3ea; cursor: pointer; }
+.logout-btn:hover { border-color: #e8c48f; color: #e8c48f; }
+
 .add-new-book-btn {
   padding: 12px 22px;
 
@@ -999,6 +1004,9 @@ main::before {
 }
 
 @media (max-width: 600px) {
+  .account-name { display: none; }
+  .account-actions { gap: 7px; }
+  .logout-btn { padding: 9px 10px; font-size: .78rem; }
   main::before {
     background-position: 58% bottom;
     background-size: auto 100%;
