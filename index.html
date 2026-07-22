@@ -3,294 +3,157 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Library</title>
-
-    <link rel="stylesheet" href="style.css?v=15" />
-    <script src="script.js?v=12" defer></script>
+    <meta
+      name="description"
+      content="Build a calm, beautifully organized personal library with My Library Corner."
+    />
+    <title>My Library Corner</title>
+    <link rel="stylesheet" href="landing.css?v=1" />
   </head>
 
   <body>
-    <header>
-      <div class="header-brand">
-        <img
-          class="library-header-icon"
-          src="images/open-book1.svg"
-          alt="Open book"
-        />
+    <header class="landing-header">
+      <a class="landing-brand" href="#top" aria-label="My Library Corner home">
+        <img src="images/open-book1.svg" alt="" />
+        <span>My Library Corner</span>
+      </a>
 
-        <h1 class="page-title">My Library</h1>
+      <nav class="landing-nav" aria-label="Main navigation">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="login-link" href="library.html">Log In</a>
+        <a class="header-cta" href="library.html">Start Your Library</a>
       </div>
-
-      <button type="button" class="add-new-book-btn">+ Add New Book</button>
     </header>
 
-    <main>
-      <div class="library-header">
-        <img
-          class="three-books-icon"
-          src="images/three-books.svg"
-          alt="Books"
-        />
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <h1 id="hero-title">Your personal library,<br />beautifully organized.</h1>
+          <p class="hero-description">
+            Track what you own, remember what you’ve read,<br />
+            and decide what comes next—all in one quiet corner.
+          </p>
 
-        <h2 class="books-section-title">Your Books</h2>
-      </div>
+          <div class="hero-actions">
+            <a class="primary-cta" href="library.html">
+              <img src="images/open-book1.svg" alt="" />
+              Start Your Library
+            </a>
+            <a class="text-cta" href="#how-it-works">
+              See How It Works <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
 
-      <div class="library-container"></div>
-
-      <!-- Add Book Modal -->
-      <div class="modal-overlay">
-        <form class="book-form">
-          <h2 class="form-title">Add New Book</h2>
-
-          <div class="form-group">
-            <label for="title">Book Title</label>
-
-            <input
-              type="text"
-              id="title"
-              name="title"
-              placeholder="The Brothers Karamazov"
-              required
-            />
+        <div class="library-preview" aria-label="Example organized library">
+          <div class="preview-heading">
+            <img src="images/three-books.svg" alt="" />
+            <strong>Your Books</strong>
+            <span>3 Books</span>
           </div>
 
-          <div class="form-group">
-            <label for="author">Author</label>
+          <div class="preview-grid">
+            <article class="preview-card">
+              <div class="sample-cover greek-cover" aria-label="Sample cover of Βίος και Λόγοι">
+                <span>Βίος και Λόγοι</span>
+                <small>Γέροντας Πορφύριος</small>
+              </div>
+              <div class="sample-info">
+                <h2>Βίος και Λόγοι</h2>
+                <p><img src="images/user.svg" alt="" /> Άγιος Πορφύριος</p>
+                <p><img src="images/pages.svg" alt="" /> 650 pages</p>
+                <span class="sample-status read-status">
+                  <img src="images/read-status.svg" alt="" /> Read
+                </span>
+              </div>
+              <div class="sample-actions">
+                <span><img src="images/eye.svg" alt="" /> View Details</span>
+                <i><img src="images/pencil.svg" alt="" /></i>
+                <i class="sample-delete"><img src="images/bin-icon.svg" alt="" /></i>
+              </div>
+            </article>
 
-            <input
-              type="text"
-              id="author"
-              name="author"
-              placeholder="Fyodor Dostoevsky"
-              required
-            />
+            <article class="preview-card">
+              <div class="sample-cover brothers-cover" aria-label="Sample cover of The Brothers Karamazov">
+                <span>The Brothers<br />Karamazov</span>
+                <small>Fyodor Dostoevsky</small>
+              </div>
+              <div class="sample-info">
+                <h2>The Brothers Karamazov</h2>
+                <p><img src="images/user.svg" alt="" /> Fyodor Dostoevsky</p>
+                <p><img src="images/pages.svg" alt="" /> 885 pages</p>
+                <span class="sample-status unread-status">
+                  <img src="images/not-read-status.svg" alt="" /> Not read
+                </span>
+              </div>
+              <div class="sample-actions">
+                <span><img src="images/eye.svg" alt="" /> View Details</span>
+                <i><img src="images/pencil.svg" alt="" /></i>
+                <i class="sample-delete"><img src="images/bin-icon.svg" alt="" /></i>
+              </div>
+            </article>
+
+            <article class="preview-card">
+              <div class="sample-cover pride-cover" aria-label="Sample cover of Pride and Prejudice">
+                <span>Pride and<br />Prejudice</span>
+                <small>Jane Austen</small>
+              </div>
+              <div class="sample-info">
+                <h2>Pride and Prejudice</h2>
+                <p><img src="images/user.svg" alt="" /> Jane Austen</p>
+                <p><img src="images/pages.svg" alt="" /> 400 pages</p>
+                <span class="sample-status read-status">
+                  <img src="images/read-status.svg" alt="" /> Read
+                </span>
+              </div>
+              <div class="sample-actions">
+                <span><img src="images/eye.svg" alt="" /> View Details</span>
+                <i><img src="images/pencil.svg" alt="" /></i>
+                <i class="sample-delete"><img src="images/bin-icon.svg" alt="" /></i>
+              </div>
+            </article>
           </div>
+        </div>
+      </section>
 
-          <div class="form-group">
-            <label for="pages">Pages</label>
+      <section id="features" class="features" aria-labelledby="features-title">
+        <div class="section-title-row">
+          <span aria-hidden="true">❧</span>
+          <h2 id="features-title">A calmer way to keep every book in its place.</h2>
+          <span aria-hidden="true">❧</span>
+        </div>
 
-            <input
-              type="number"
-              id="pages"
-              name="pages"
-              placeholder="885"
-              min="1"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="cover-url">Custom Cover URL <span>(optional)</span></label>
-
-            <input
-              type="url"
-              id="cover-url"
-              name="cover-url"
-              placeholder="Leave blank to find a cover automatically"
-            />
-          </div>
-
-          <div class="checkbox-group">
-            <input type="checkbox" id="read-status" name="read-status" />
-
-            <label for="read-status"> I have read this book </label>
-          </div>
-
-          <div class="button-container">
-            <button type="button" class="cancel-btn">Cancel</button>
-
-            <button type="submit" class="submit-book-btn">Add Book</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Edit Book Modal -->
-      <div class="edit-modal-overlay">
-        <form class="edit-book-form">
-          <div class="edit-form-header">
-            <h2 class="form-title">Edit Book</h2>
-
-            <button
-              type="button"
-              class="close-edit-btn"
-              aria-label="Close edit form"
-            >
-              &times;
-            </button>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-title">Book Title</label>
-
-            <input type="text" id="edit-title" name="edit-title" required />
-          </div>
-
-          <div class="form-group">
-            <label for="edit-author">Author</label>
-
-            <input type="text" id="edit-author" name="edit-author" required />
-          </div>
-
-          <div class="form-group">
-            <label for="edit-pages">Pages</label>
-
-            <input
-              type="number"
-              id="edit-pages"
-              name="edit-pages"
-              min="1"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="edit-date-added">Date Added</label>
-
-            <input
-              type="date"
-              id="edit-date-added"
-              name="edit-date-added"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="edit-rating">Your Rating</label>
-
-            <select id="edit-rating" name="edit-rating">
-              <option value="0">Not rated</option>
-              <option value="1">★ 1 star</option>
-              <option value="2">★★ 2 stars</option>
-              <option value="3">★★★ 3 stars</option>
-              <option value="4">★★★★ 4 stars</option>
-              <option value="5">★★★★★ 5 stars</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-cover-url">
-              Custom Cover URL <span>(optional)</span>
-            </label>
-
-            <input
-              type="url"
-              id="edit-cover-url"
-              name="edit-cover-url"
-              placeholder="Paste a cover URL to replace the current cover"
-            />
-          </div>
-
-          <div class="checkbox-group">
-            <input
-              type="checkbox"
-              id="edit-read-status"
-              name="edit-read-status"
-            />
-
-            <label for="edit-read-status"> I have read this book </label>
-          </div>
-
-          <div class="button-container">
-            <button type="button" class="cancel-edit-btn">Cancel</button>
-
-            <button type="submit" class="save-edit-btn">Save Changes</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Book Details Modal -->
-      <div class="details-modal-overlay">
-        <article class="details-modal" aria-labelledby="details-title">
-          <div class="details-modal-header">
-            <p class="details-eyebrow">Book details</p>
-
-            <button
-              type="button"
-              class="close-details-btn"
-              aria-label="Close book details"
-            >
-              &times;
-            </button>
-          </div>
-
-          <div class="details-content">
-            <img class="details-cover" src="" alt="" />
-
-            <div class="details-information">
-              <h2 id="details-title" class="details-title"></h2>
-              <p class="details-author"></p>
-
-              <dl class="details-list">
-                <div>
-                  <dt>Pages</dt>
-                  <dd class="details-pages"></dd>
-                </div>
-
-                <div>
-                  <dt>Reading status</dt>
-                  <dd class="details-status"></dd>
-                </div>
-
-                <div>
-                  <dt>Date added</dt>
-                  <dd class="details-date"></dd>
-                </div>
-
-                <div class="details-rating-item">
-                  <dt>Your rating</dt>
-                  <dd class="details-rating-display" aria-label="Not rated">
-                    <span>★</span>
-                    <span>★</span>
-                    <span>★</span>
-                    <span>★</span>
-                    <span>★</span>
-                  </dd>
-                </div>
-              </dl>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon"><img src="images/three-books.svg" alt="" /></div>
+            <div>
+              <h3>Build Your Collection</h3>
+              <p>Add the books you own and keep your shelves organized, just the way you like.</p>
             </div>
-          </div>
+          </article>
 
-          <section class="details-description-section">
-            <h3>About this book</h3>
-            <p class="details-description"></p>
-          </section>
-        </article>
-      </div>
+          <article class="feature-card" id="how-it-works">
+            <div class="feature-icon green"><img src="images/read-status.svg" alt="" /></div>
+            <div>
+              <h3>Track Your Reading</h3>
+              <p>See what you’ve read, what’s next, and what you want to dive into.</p>
+            </div>
+          </article>
 
-      <!-- Quick Rating Modal -->
-      <div class="rating-modal-overlay">
-        <section class="rating-modal" aria-labelledby="rating-modal-title">
-          <button
-            type="button"
-            class="close-rating-btn"
-            aria-label="Close rating"
-          >
-            &times;
-          </button>
-
-          <p class="rating-modal-eyebrow">Your rating</p>
-          <h2 id="rating-modal-title" class="rating-modal-title"></h2>
-          <p class="rating-modal-help">Choose from 1 to 5 stars</p>
-
-          <div class="quick-rating-control" aria-label="Choose book rating">
-            <button type="button" data-rating="1" aria-label="1 star">★</button>
-            <button type="button" data-rating="2" aria-label="2 stars">★</button>
-            <button type="button" data-rating="3" aria-label="3 stars">★</button>
-            <button type="button" data-rating="4" aria-label="4 stars">★</button>
-            <button type="button" data-rating="5" aria-label="5 stars">★</button>
-          </div>
-        </section>
-      </div>
-
-      <div class="library-message">
-        <img class="bookshelf" src="images/shelf.png" alt="Bookshelf" />
-
-        <h3 class="library-message-title">Your library is empty!</h3>
-
-        <p class="library-message-text">
-          Add your first book to start building your collection.
-        </p>
-      </div>
+          <article class="feature-card" id="about">
+            <div class="feature-icon star" aria-hidden="true">★</div>
+            <div>
+              <h3>Rate Every Story</h3>
+              <p>Save your thoughts with ratings so your favorite books are easy to find again.</p>
+            </div>
+          </article>
+        </div>
+      </section>
     </main>
   </body>
 </html>
