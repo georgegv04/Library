@@ -1178,7 +1178,7 @@ async function importLocalBooks(userId) {
 logoutBtn.addEventListener("click", async () => {
   logoutBtn.disabled = true;
   await apiRequest("/api/auth/logout", { method: "POST" });
-  location.href = "/login";
+  location.href = "/login?logged-out=1";
 });
 
 async function initializeLibrary() {

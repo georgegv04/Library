@@ -27,17 +27,17 @@
           <button id="login-tab" type="button" role="tab">Log in</button>
         </div>
 
-        <form id="auth-form">
+        <form id="auth-form" autocomplete="off">
           <h2 id="form-title">Create your account</h2>
           <p id="form-intro">Start a personal library that belongs only to you.</p>
 
           <label id="name-field">
             Your name
-            <input id="name" name="name" type="text" autocomplete="name" maxlength="100" required />
+            <input id="name" name="name" type="text" autocomplete="off" maxlength="100" required />
           </label>
           <label>
             Email address
-            <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required />
+            <input id="email" name="email" type="email" autocomplete="off" maxlength="254" required />
           </label>
           <label>
             Password

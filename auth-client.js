@@ -19,6 +19,7 @@ let mode = location.pathname === "/login" ? "login" : "signup";
 function setMode(nextMode) {
   mode = nextMode;
   const signup = mode === "signup";
+  form.reset();
   history.replaceState({}, "", signup ? "/signup" : "/login");
   signupTab.setAttribute("aria-selected", String(signup));
   loginTab.setAttribute("aria-selected", String(!signup));
@@ -28,7 +29,7 @@ function setMode(nextMode) {
   confirmField.hidden = !signup;
   nameInput.required = signup;
   confirmInput.required = signup;
-  passwordInput.autocomplete = signup ? "new-password" : "current-password";
+  passwordInput.autocomplete = "off";
   formTitle.textContent = signup ? "Create your account" : "Welcome back";
   formIntro.textContent = signup ? "Start a personal library that belongs only to you." : "Return to your books and reading memories.";
   passwordHelp.hidden = !signup;
@@ -67,3 +68,10 @@ form.addEventListener("submit", async (event) => {
 
 fetch("/api/auth/me").then((response) => { if (response.ok) location.href = "/library"; });
 setMode(mode);
+
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted || new URLSearchParams(location.search).has("logged-out")) {
+    form.reset();
+    history.replaceState({}, "", mode === "signup" ? "/signup" : "/login");
+  }
+});
