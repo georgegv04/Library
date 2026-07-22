@@ -46,6 +46,19 @@ const schema = `
 
   CREATE INDEX IF NOT EXISTS sessions_user_id_index ON sessions(user_id);
   CREATE INDEX IF NOT EXISTS sessions_expires_at_index ON sessions(expires_at);
+
+  CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    token_hash TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  ) STRICT;
+
+  CREATE INDEX IF NOT EXISTS password_reset_tokens_user_id_index
+    ON password_reset_tokens(user_id);
+  CREATE INDEX IF NOT EXISTS password_reset_tokens_expires_at_index
+    ON password_reset_tokens(expires_at);
 `;
 
 export function openDatabase(databasePath = defaultDatabasePath) {

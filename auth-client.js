@@ -12,6 +12,7 @@ const submitButton = document.querySelector(".submit-button");
 const formTitle = document.querySelector("#form-title");
 const formIntro = document.querySelector("#form-intro");
 const passwordHelp = document.querySelector("#password-help");
+const forgotLink = document.querySelector(".forgot-link");
 
 let mode = location.pathname === "/login" ? "login" : "signup";
 
@@ -31,6 +32,7 @@ function setMode(nextMode) {
   formTitle.textContent = signup ? "Create your account" : "Welcome back";
   formIntro.textContent = signup ? "Start a personal library that belongs only to you." : "Return to your books and reading memories.";
   passwordHelp.hidden = !signup;
+  forgotLink.hidden = signup;
   submitButton.innerHTML = signup ? "Create account <span>→</span>" : "Log in <span>→</span>";
   message.textContent = "";
 }

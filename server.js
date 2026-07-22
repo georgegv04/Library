@@ -117,6 +117,47 @@ async function handleAuth(request, response, pathname) {
     if (token) database.prepare("DELETE FROM sessions WHERE token_hash = ?").run(hashSessionToken(token));
     return sendJson(response, 200, { ok: true }, { "Set-Cookie": sessionCookie("", 0) });
   }
+  if (pathname === "/api/auth/forgot-password" && request.method === "POST") {
+    if (authRateLimited(request)) return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
+    const { email: rawEmail } = await readJson(request);
+    const email = String(rawEmail || "").trim().toLowerCase();
+    const user = database.prepare("SELECT id FROM users WHERE email = ?").get(email);
+    let resetUrl;
+    if (user) {
+      database.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").run(user.id);
+      const token = createSessionToken();
+      const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString();
+      database.prepare("INSERT INTO password_reset_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)")
+        .run(hashSessionToken(token), user.id, expiresAt);
+      resetUrl = `/reset-password?token=${encodeURIComponent(token)}`;
+      if (process.env.NODE_ENV !== "production") console.log(`Password reset link: http://localhost:${port}${resetUrl}`);
+    }
+    const body = { message: "If that account exists, a password reset link has been created." };
+    if (resetUrl && process.env.NODE_ENV !== "production") body.resetUrl = resetUrl;
+    return sendJson(response, 200, body);
+  }
+  if (pathname === "/api/auth/reset-password" && request.method === "POST") {
+    if (authRateLimited(request)) return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
+    const input = await readJson(request);
+    const token = String(input.token || "");
+    const password = String(input.password || "");
+    if (password.length < 8 || password.length > 128) return sendJson(response, 400, { error: "Password must be 8–128 characters." });
+    const reset = token && database.prepare(`SELECT user_id FROM password_reset_tokens WHERE token_hash = ? AND expires_at > CURRENT_TIMESTAMP`)
+      .get(hashSessionToken(token));
+    if (!reset) return sendJson(response, 400, { error: "This reset link is invalid or has expired." });
+    const passwordHash = await hashPassword(password);
+    database.exec("BEGIN IMMEDIATE");
+    try {
+      database.prepare("UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?").run(passwordHash, reset.user_id);
+      database.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").run(reset.user_id);
+      database.prepare("DELETE FROM sessions WHERE user_id = ?").run(reset.user_id);
+      database.exec("COMMIT");
+    } catch (error) {
+      database.exec("ROLLBACK");
+      throw error;
+    }
+    return sendJson(response, 200, { message: "Your password has been reset. You can now log in." });
+  }
   if (!["/api/auth/signup", "/api/auth/login"].includes(pathname) || request.method !== "POST") return false;
   if (authRateLimited(request)) return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
   const input = await readJson(request);
@@ -175,6 +216,7 @@ function resolveRequestPath(pathname) {
   if (pathname === "/") return "index.html";
   if (pathname === "/library") return "library.html";
   if (pathname === "/login" || pathname === "/signup") return "auth.html";
+  if (pathname === "/forgot-password" || pathname === "/reset-password") return "password-reset.html";
   return pathname.replace(/^\/+/, "");
 }
 
@@ -203,5 +245,11 @@ const server = createServer(async (request, response) => {
 
 server.listen(port, "0.0.0.0", () => console.log(`My Library Corner is running at http://localhost:${port}`));
 
-function shutdown() { database.close(); server.close(); }
+function shutdown() {
+  server.close(() => {
+    database.close();
+    process.exit(0);
+  });
+  server.closeAllConnections();
+}
 process.on("SIGINT", shutdown); process.on("SIGTERM", shutdown);
