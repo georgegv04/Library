@@ -1,5 +1,6 @@
 :root { --navy: #0b1926; --cream: #f6f1e8; --gold: #d8b46a; --ink: #172033; }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { margin: 0; min-height: 100vh; background: var(--navy) url("images/botanical-background.png") center/cover; color: var(--cream); font-family: Georgia, "Times New Roman", serif; }
 body::before { position: fixed; inset: 0; background: rgba(7, 18, 28, .76); content: ""; }
 .brand { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 12px; margin: 28px clamp(24px, 5vw, 72px); color: white; font-weight: 700; text-decoration: none; }
