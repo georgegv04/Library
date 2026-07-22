@@ -5,155 +5,144 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Build a calm, beautifully organized personal library with My Library Corner."
+      content="Keep every book, reading memory, and next great story together in My Library Corner."
     />
     <title>My Library Corner</title>
-    <link rel="stylesheet" href="landing.css?v=1" />
+    <link rel="stylesheet" href="landing.css?v=2" />
   </head>
 
   <body>
-    <header class="landing-header">
-      <a class="landing-brand" href="#top" aria-label="My Library Corner home">
-        <img src="images/open-book1.svg" alt="" />
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="My Library Corner home">
+        <span class="brand-mark"><img src="images/open-book1.svg" alt="" /></span>
         <span>My Library Corner</span>
       </a>
 
-      <nav class="landing-nav" aria-label="Main navigation">
-        <a href="#features">Features</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#about">About</a>
+      <nav aria-label="Main navigation">
+        <a href="#experience">The experience</a>
+        <a href="#collection">Your collection</a>
+        <a href="#story">Our story</a>
       </nav>
 
-      <div class="header-actions">
-        <a class="login-link" href="library.html">Log In</a>
-        <a class="header-cta" href="library.html">Start Your Library</a>
-      </div>
+      <a class="header-link" href="library.html">Open my library <span>→</span></a>
     </header>
 
     <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
+      <section class="hero">
         <div class="hero-copy">
-          <h1 id="hero-title">Your personal library,<br />beautifully organized.</h1>
-          <p class="hero-description">
-            Track what you own, remember what you’ve read,<br />
-            and decide what comes next—all in one quiet corner.
+          <p class="eyebrow"><span></span> Your private reading room</p>
+          <h1>A quiet place for every book you love.</h1>
+          <p class="hero-intro">
+            Build a thoughtful record of your shelves, your reading life, and
+            every story you want to remember.
           </p>
 
           <div class="hero-actions">
-            <a class="primary-cta" href="library.html">
-              <img src="images/open-book1.svg" alt="" />
-              Start Your Library
+            <a class="primary-button" href="library.html">
+              Begin your collection <span>→</span>
             </a>
-            <a class="text-cta" href="#how-it-works">
-              See How It Works <span aria-hidden="true">→</span>
-            </a>
+            <a class="secondary-link" href="#experience">Take a look inside</a>
+          </div>
+
+          <div class="hero-note">
+            <div class="mini-covers" aria-hidden="true">
+              <i></i><i></i><i></i>
+            </div>
+            <p><strong>Your books stay yours.</strong><br />A personal corner, ready whenever you are.</p>
           </div>
         </div>
 
-        <div class="library-preview" aria-label="Example organized library">
-          <div class="preview-heading">
-            <img src="images/three-books.svg" alt="" />
-            <strong>Your Books</strong>
-            <span>3 Books</span>
+        <div class="reading-room" aria-label="Preview of a personal library">
+          <div class="room-glow"></div>
+          <div class="room-topline">
+            <div>
+              <p>My reading room</p>
+              <strong>Wednesday, 22 July</strong>
+            </div>
+            <span class="room-monogram">ML</span>
           </div>
 
-          <div class="preview-grid">
-            <article class="preview-card">
-              <div class="sample-cover greek-cover" aria-label="Sample cover of Βίος και Λόγοι">
-                <span>Βίος και Λόγοι</span>
-                <small>Γέροντας Πορφύριος</small>
+          <div class="current-book">
+            <div class="featured-cover">
+              <span>ΒΙΟΣ<br />ΚΑΙ<br />ΛΟΓΟΙ</span>
+              <small>ΑΓΙΟΣ ΠΟΡΦΥΡΙΟΣ</small>
+            </div>
+            <div class="current-copy">
+              <p class="small-label">Currently on your shelf</p>
+              <h2>Βίος και Λόγοι</h2>
+              <p>Άγιος Πορφύριος</p>
+              <div class="book-meta">
+                <span><img src="images/pages.svg" alt="" /> 650 pages</span>
+                <span><img src="images/read-status.svg" alt="" /> Read</span>
               </div>
-              <div class="sample-info">
-                <h2>Βίος και Λόγοι</h2>
-                <p><img src="images/user.svg" alt="" /> Άγιος Πορφύριος</p>
-                <p><img src="images/pages.svg" alt="" /> 650 pages</p>
-                <span class="sample-status read-status">
-                  <img src="images/read-status.svg" alt="" /> Read
-                </span>
-              </div>
-              <div class="sample-actions">
-                <span><img src="images/eye.svg" alt="" /> View Details</span>
-                <i><img src="images/pencil.svg" alt="" /></i>
-                <i class="sample-delete"><img src="images/bin-icon.svg" alt="" /></i>
-              </div>
-            </article>
+              <a href="library.html">View book details <span>↗</span></a>
+            </div>
+          </div>
 
-            <article class="preview-card">
-              <div class="sample-cover brothers-cover" aria-label="Sample cover of The Brothers Karamazov">
-                <span>The Brothers<br />Karamazov</span>
-                <small>Fyodor Dostoevsky</small>
+          <div class="shelf-preview">
+            <div class="shelf-heading">
+              <div>
+                <p>Your collection</p>
+                <strong>Three stories, one quiet corner</strong>
               </div>
-              <div class="sample-info">
-                <h2>The Brothers Karamazov</h2>
-                <p><img src="images/user.svg" alt="" /> Fyodor Dostoevsky</p>
-                <p><img src="images/pages.svg" alt="" /> 885 pages</p>
-                <span class="sample-status unread-status">
-                  <img src="images/not-read-status.svg" alt="" /> Not read
-                </span>
-              </div>
-              <div class="sample-actions">
-                <span><img src="images/eye.svg" alt="" /> View Details</span>
-                <i><img src="images/pencil.svg" alt="" /></i>
-                <i class="sample-delete"><img src="images/bin-icon.svg" alt="" /></i>
-              </div>
-            </article>
-
-            <article class="preview-card">
-              <div class="sample-cover pride-cover" aria-label="Sample cover of Pride and Prejudice">
-                <span>Pride and<br />Prejudice</span>
-                <small>Jane Austen</small>
-              </div>
-              <div class="sample-info">
-                <h2>Pride and Prejudice</h2>
-                <p><img src="images/user.svg" alt="" /> Jane Austen</p>
-                <p><img src="images/pages.svg" alt="" /> 400 pages</p>
-                <span class="sample-status read-status">
-                  <img src="images/read-status.svg" alt="" /> Read
-                </span>
-              </div>
-              <div class="sample-actions">
-                <span><img src="images/eye.svg" alt="" /> View Details</span>
-                <i><img src="images/pencil.svg" alt="" /></i>
-                <i class="sample-delete"><img src="images/bin-icon.svg" alt="" /></i>
-              </div>
-            </article>
+              <span>3 books</span>
+            </div>
+            <div class="book-spines" aria-label="Three sample books">
+              <div class="spine spine-green"><span>Βίος και Λόγοι</span><small>Πορφύριος</small></div>
+              <div class="spine spine-russet"><span>The Brothers Karamazov</span><small>Dostoevsky</small></div>
+              <div class="spine spine-red"><span>Pride and Prejudice</span><small>Jane Austen</small></div>
+              <a class="add-book-tile" href="library.html" aria-label="Add a new book"><b>+</b><span>Add a book</span></a>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="features" class="features" aria-labelledby="features-title">
-        <div class="section-title-row">
-          <span aria-hidden="true">❧</span>
-          <h2 id="features-title">A calmer way to keep every book in its place.</h2>
-          <span aria-hidden="true">❧</span>
+      <section class="manifesto" id="experience">
+        <p class="section-number">01 — The experience</p>
+        <div class="manifesto-heading">
+          <h2>Your shelves tell a story.<br />Keep it beautifully.</h2>
+          <p>
+            No noise, no endless feeds—just a considered space to collect the
+            books that shaped you and find the one waiting to be opened next.
+          </p>
         </div>
 
-        <div class="feature-grid">
-          <article class="feature-card">
-            <div class="feature-icon"><img src="images/three-books.svg" alt="" /></div>
+        <div class="feature-layout" id="collection">
+          <article class="feature feature-large">
+            <span class="feature-index">01</span>
+            <div class="feature-illustration shelf-art" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><b></b>
+            </div>
             <div>
-              <h3>Build Your Collection</h3>
-              <p>Add the books you own and keep your shelves organized, just the way you like.</p>
+              <h3>Everything on your shelves</h3>
+              <p>Keep titles, authors, covers, page counts, and reading status together in one elegant collection.</p>
             </div>
           </article>
 
-          <article class="feature-card" id="how-it-works">
-            <div class="feature-icon green"><img src="images/read-status.svg" alt="" /></div>
-            <div>
-              <h3>Track Your Reading</h3>
-              <p>See what you’ve read, what’s next, and what you want to dive into.</p>
-            </div>
+          <article class="feature feature-small">
+            <span class="feature-index">02</span>
+            <div class="round-icon"><img src="images/read-status.svg" alt="" /></div>
+            <h3>Remember what you’ve read</h3>
+            <p>A clear reading history makes every return to your shelves feel familiar.</p>
           </article>
 
-          <article class="feature-card" id="about">
-            <div class="feature-icon star" aria-hidden="true">★</div>
-            <div>
-              <h3>Rate Every Story</h3>
-              <p>Save your thoughts with ratings so your favorite books are easy to find again.</p>
-            </div>
+          <article class="feature feature-small feature-dark" id="story">
+            <span class="feature-index">03</span>
+            <blockquote>“There is no friend as loyal as a book.”</blockquote>
+            <p>— Ernest Hemingway</p>
+            <a href="library.html">Make your own corner <span>→</span></a>
           </article>
         </div>
       </section>
     </main>
+
+    <footer>
+      <a class="brand footer-brand" href="#top">
+        <span class="brand-mark"><img src="images/open-book1.svg" alt="" /></span>
+        <span>My Library Corner</span>
+      </a>
+      <p>Made for slow reading and well-loved books.</p>
+      <a href="library.html">Enter the library →</a>
+    </footer>
   </body>
 </html>
