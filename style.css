@@ -36,7 +36,7 @@ main::before {
   z-index: -1;
   inset: 0;
 
-  background-image: url("images/botanical-background.png");
+  background-image: url("images/botanical-background-no-fruit.png");
   background-position: center bottom;
   background-repeat: no-repeat;
   background-size: cover;
