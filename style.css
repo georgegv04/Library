@@ -253,14 +253,24 @@ main::before {
   height: 18px;
 }
 
-.status-read {
+.status-finished {
   background-color: #e4f3e6;
   color: #2e7d32;
 }
 
-.status-not-read {
-  background-color: #fbe3e1;
-  color: #b8322c;
+.status-want {
+  background-color: #eee8dc;
+  color: #6f5c43;
+}
+
+.status-reading {
+  background-color: #e2edf5;
+  color: #275b78;
+}
+
+.status-dnf {
+  background-color: #f7e7e2;
+  color: #9a493d;
 }
 
 .bottom-group {
@@ -870,6 +880,87 @@ main::before {
   outline-offset: 2px;
 }
 
+.status-picker {
+  min-width: 0;
+  border: 0;
+}
+
+.status-picker legend {
+  margin-bottom: 10px;
+  color: #172033;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.status-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.status-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #d6c6a8;
+  border-radius: 9px;
+  background: #fffdf8;
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.status-option:hover {
+  border-color: #b68a4d;
+  transform: translateY(-1px);
+}
+
+.status-option:has(input:checked) {
+  border-color: #a87431;
+  box-shadow: 0 0 0 2px rgba(232, 196, 143, 0.42);
+}
+
+.status-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.status-option-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 50%;
+  background: #eee3d2;
+  color: #6f5c43;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.status-option-reading .status-option-mark { background: #e2edf5; color: #275b78; }
+.status-option-finished .status-option-mark { background: #e4f3e6; color: #2e7d32; }
+.status-option-dnf .status-option-mark { background: #f7e7e2; color: #9a493d; }
+
+.status-option strong,
+.status-option small {
+  display: block;
+}
+
+.status-option strong {
+  color: #172033;
+  font-size: 0.9rem;
+}
+
+.status-option small {
+  margin-top: 2px;
+  color: #7c7062;
+  font-size: 0.76rem;
+}
+
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -1080,6 +1171,10 @@ main::before {
   .book-form,
   .edit-book-form {
     padding: 22px;
+  }
+
+  .status-options {
+    grid-template-columns: 1fr;
   }
 
   .details-modal {

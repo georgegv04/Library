@@ -38,9 +38,11 @@ test("signup, sessions, protected books, logout, and login persistence work toge
 
   const createBook = await fetch(`${baseUrl}/api/books`, {
     method: "POST", headers: { "Content-Type": "application/json", Cookie: cookie },
-    body: JSON.stringify({ title: "Test Book", author: "Test Author", pages: 123, readStatus: "Read" }),
+    body: JSON.stringify({ title: "Test Book", author: "Test Author", pages: 123, readStatus: "Currently reading" }),
   });
   assert.equal(createBook.status, 201);
+  const createdBook = (await createBook.json()).book;
+  assert.equal(createdBook.readStatus, "Currently reading");
 
   const list = await fetch(`${baseUrl}/api/books`, { headers: { Cookie: cookie } });
   assert.equal(list.status, 200);
@@ -64,4 +66,43 @@ test("signup, sessions, protected books, logout, and login persistence work toge
   assert.equal(libraryAfterLogin.status, 200);
   assert.equal((await libraryAfterLogin.json()).books.length, 1);
 
+});
+
+test("supports each reading status and rejects unknown statuses", { timeout: 10_000 }, async (context) => {
+  const directory = mkdtempSync(join(tmpdir(), "library-status-api-"));
+  const port = 45000 + Math.floor(Math.random() * 1000);
+  const child = spawn(process.execPath, ["server.js"], {
+    cwd: projectDirectory,
+    env: { ...process.env, PORT: String(port), LIBRARY_DB_PATH: join(directory, "test.sqlite") },
+    stdio: "ignore",
+  });
+  context.after(() => { child.kill("SIGTERM"); rmSync(directory, { recursive: true, force: true }); });
+
+  const baseUrl = `http://127.0.0.1:${port}`;
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    try { if ((await fetch(baseUrl)).ok) break; } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  const signup = await fetch(`${baseUrl}/api/auth/signup`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: "Status Reader", email: "status@example.com", password: "password123" }),
+  });
+  const cookie = signup.headers.get("set-cookie").split(";")[0];
+  const statuses = ["Want to read", "Currently reading", "Finished", "Did not finish"];
+
+  for (const [index, readStatus] of statuses.entries()) {
+    const response = await fetch(`${baseUrl}/api/books`, {
+      method: "POST", headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({ title: `Book ${index}`, author: "An Author", pages: 100, readStatus }),
+    });
+    assert.equal(response.status, 201);
+    assert.equal((await response.json()).book.readStatus, readStatus);
+  }
+
+  const invalid = await fetch(`${baseUrl}/api/books`, {
+    method: "POST", headers: { "Content-Type": "application/json", Cookie: cookie },
+    body: JSON.stringify({ title: "Invalid", author: "An Author", pages: 100, readStatus: "Somewhere else" }),
+  });
+  assert.equal(invalid.status, 400);
 });

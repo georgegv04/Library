@@ -12,6 +12,7 @@ const port = Number(process.env.PORT) || 4173;
 const database = openDatabase(process.env.LIBRARY_DB_PATH);
 const sessionLifetimeSeconds = 60 * 60 * 24 * 30;
 const authAttempts = new Map();
+const readingStatuses = new Set(["Want to read", "Currently reading", "Finished", "Did not finish"]);
 
 const contentTypes = {
   ".css": "text/css; charset=utf-8", ".html": "text/html; charset=utf-8",
@@ -76,16 +77,22 @@ function publicUser(user) { return { id: Number(user.id), name: user.name, email
 function serializeBook(book) {
   return {
     id: book.id, title: book.title, author: book.author, pages: Number(book.pages),
-    readStatus: book.read_status ? "Read" : "Not read", coverUrl: book.cover_url,
+    readStatus: book.reading_status || (book.read_status ? "Finished" : "Want to read"),
+    coverUrl: book.cover_url,
     description: book.description, descriptionVersion: book.description ? 2 : null,
     rating: Number(book.rating), dateAdded: book.date_added,
   };
 }
 
 function validateBook(input) {
+  const requestedStatus = input.readStatus === "Read"
+    ? "Finished"
+    : input.readStatus === "Not read"
+      ? "Want to read"
+      : String(input.readStatus || "Want to read");
   const book = {
     title: String(input.title || "").trim(), author: String(input.author || "").trim(),
-    pages: Number(input.pages), readStatus: input.readStatus === "Read" ? 1 : 0,
+    pages: Number(input.pages), readStatus: requestedStatus,
     coverUrl: input.coverUrl ? String(input.coverUrl).slice(0, 2000) : null,
     description: input.description ? String(input.description).slice(0, 5000) : null,
     rating: Number(input.rating) || 0,
@@ -94,6 +101,7 @@ function validateBook(input) {
   if (!book.title || book.title.length > 300) throw Object.assign(new Error("Enter a valid title."), { status: 400 });
   if (!book.author || book.author.length > 300) throw Object.assign(new Error("Enter a valid author."), { status: 400 });
   if (!Number.isInteger(book.pages) || book.pages < 1 || book.pages > 100000) throw Object.assign(new Error("Enter a valid page count."), { status: 400 });
+  if (!readingStatuses.has(book.readStatus)) throw Object.assign(new Error("Choose a valid reading status."), { status: 400 });
   if (!Number.isInteger(book.rating) || book.rating < 0 || book.rating > 5) throw Object.assign(new Error("Rating must be between 0 and 5."), { status: 400 });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(book.dateAdded)) throw Object.assign(new Error("Enter a valid date."), { status: 400 });
   return book;
@@ -152,16 +160,16 @@ async function handleBooks(request, response, pathname) {
   }
   if (request.method === "POST" && !id) {
     const input = await readJson(request); const book = validateBook(input); const bookId = input.id || crypto.randomUUID();
-    database.prepare(`INSERT INTO books (id,user_id,title,author,pages,read_status,cover_url,description,rating,date_added) VALUES (?,?,?,?,?,?,?,?,?,?)`)
-      .run(bookId,user.id,book.title,book.author,book.pages,book.readStatus,book.coverUrl,book.description,book.rating,book.dateAdded);
+    database.prepare(`INSERT INTO books (id,user_id,title,author,pages,read_status,reading_status,cover_url,description,rating,date_added) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+      .run(bookId,user.id,book.title,book.author,book.pages,book.readStatus === "Finished" ? 1 : 0,book.readStatus,book.coverUrl,book.description,book.rating,book.dateAdded);
     return sendJson(response, 201, { book: serializeBook(database.prepare("SELECT * FROM books WHERE id = ? AND user_id = ?").get(bookId,user.id)) });
   }
   const existing = id && database.prepare("SELECT * FROM books WHERE id = ? AND user_id = ?").get(id, user.id);
   if (!existing) return sendJson(response, 404, { error: "Book not found." });
   if (request.method === "PUT") {
     const book = validateBook(await readJson(request));
-    database.prepare(`UPDATE books SET title=?,author=?,pages=?,read_status=?,cover_url=?,description=?,rating=?,date_added=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND user_id=?`)
-      .run(book.title,book.author,book.pages,book.readStatus,book.coverUrl,book.description,book.rating,book.dateAdded,id,user.id);
+    database.prepare(`UPDATE books SET title=?,author=?,pages=?,read_status=?,reading_status=?,cover_url=?,description=?,rating=?,date_added=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND user_id=?`)
+      .run(book.title,book.author,book.pages,book.readStatus === "Finished" ? 1 : 0,book.readStatus,book.coverUrl,book.description,book.rating,book.dateAdded,id,user.id);
     return sendJson(response, 200, { book: serializeBook(database.prepare("SELECT * FROM books WHERE id = ? AND user_id = ?").get(id,user.id)) });
   }
   if (request.method === "DELETE") {

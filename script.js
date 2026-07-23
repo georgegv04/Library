@@ -106,7 +106,7 @@ const titleInput = document.querySelector("#title");
 const authorInput = document.querySelector("#author");
 const pagesInput = document.querySelector("#pages");
 const coverUrlInput = document.querySelector("#cover-url");
-const readStatusInput = document.querySelector("#read-status");
+const readStatusInputs = document.querySelectorAll('input[name="read-status"]');
 
 const editTitleInput = document.querySelector("#edit-title");
 
@@ -169,7 +169,7 @@ function openEditModal(book) {
   editDateAddedInput.value = book.dateAdded || getTodayDate();
   editRatingInput.value = String(book.rating || 0);
 
-  editReadStatusInput.checked = book.readStatus === "Read";
+  editReadStatusInput.value = book.readStatus;
 
   editModalOverlay.classList.add("active");
   editTitleInput.focus();
@@ -186,10 +186,13 @@ function closeEditModal() {
 }
 
 function getFallbackDescription(book) {
-  const readingNote =
-    book.readStatus === "Read"
-      ? "It is marked as read in your collection."
-      : "It is waiting to be read in your collection.";
+  const readingNotes = {
+    "Want to read": "It is waiting on your reading list.",
+    "Currently reading": "You are currently reading it.",
+    Finished: "You have finished reading it.",
+    "Did not finish": "You stopped reading it before the end.",
+  };
+  const readingNote = readingNotes[book.readStatus] || readingNotes["Want to read"];
 
   return `${book.title} is a ${book.pages}-page work by ${book.author}. ${readingNote}`;
 }
@@ -912,15 +915,16 @@ function createBookCard(book) {
   statusText.classList.add("status-text");
   statusText.textContent = book.readStatus;
 
-  if (book.readStatus === "Read") {
-    statusIcon.src = "images/read-status.svg";
-    statusIcon.alt = "Read";
-    bookStatus.classList.add("status-read");
-  } else {
-    statusIcon.src = "images/not-read-status.svg";
-    statusIcon.alt = "Not read";
-    bookStatus.classList.add("status-not-read");
-  }
+  const statusPresentation = {
+    "Want to read": { icon: "images/not-read-status.svg", className: "status-want" },
+    "Currently reading": { icon: "images/open-book1.svg", className: "status-reading" },
+    Finished: { icon: "images/read-status.svg", className: "status-finished" },
+    "Did not finish": { icon: "images/not-read-status.svg", className: "status-dnf" },
+  };
+  const presentation = statusPresentation[book.readStatus] || statusPresentation["Want to read"];
+  statusIcon.src = presentation.icon;
+  statusIcon.alt = "";
+  bookStatus.classList.add(presentation.className);
 
   bookStatus.appendChild(statusIcon);
   bookStatus.appendChild(statusText);
@@ -1048,7 +1052,7 @@ bookForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  const readStatus = readStatusInput.checked ? "Read" : "Not read";
+  const readStatus = [...readStatusInputs].find((input) => input.checked)?.value || "Want to read";
 
   submitBookBtn.disabled = true;
   submitBookBtn.textContent = "Finding cover...";
@@ -1092,7 +1096,7 @@ editBookForm.addEventListener("submit", async (event) => {
 
   const customCoverUrl = editCoverUrlInput.value.trim();
 
-  const updatedReadStatus = editReadStatusInput.checked ? "Read" : "Not read";
+  const updatedReadStatus = editReadStatusInput.value;
 
   if (!updatedTitle || !updatedAuthor || !updatedPages || !updatedDateAdded) {
     return;

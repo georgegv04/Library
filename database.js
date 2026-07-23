@@ -23,6 +23,8 @@ const schema = `
     author TEXT NOT NULL CHECK (length(trim(author)) > 0),
     pages INTEGER NOT NULL CHECK (pages > 0),
     read_status INTEGER NOT NULL DEFAULT 0 CHECK (read_status IN (0, 1)),
+    reading_status TEXT NOT NULL DEFAULT 'Want to read'
+      CHECK (reading_status IN ('Want to read', 'Currently reading', 'Finished', 'Did not finish')),
     cover_url TEXT,
     description TEXT,
     rating INTEGER NOT NULL DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
@@ -58,6 +60,19 @@ export function openDatabase(databasePath = defaultDatabasePath) {
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec("PRAGMA journal_mode = WAL;");
   database.exec(schema);
+
+  const bookColumns = database.prepare("PRAGMA table_info(books)").all();
+  if (!bookColumns.some(({ name }) => name === "reading_status")) {
+    database.exec(`
+      ALTER TABLE books ADD COLUMN reading_status TEXT NOT NULL DEFAULT 'Want to read'
+        CHECK (reading_status IN ('Want to read', 'Currently reading', 'Finished', 'Did not finish'));
+      UPDATE books
+      SET reading_status = CASE
+        WHEN read_status = 1 THEN 'Finished'
+        ELSE 'Want to read'
+      END;
+    `);
+  }
 
   return database;
 }

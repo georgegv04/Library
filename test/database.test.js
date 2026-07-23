@@ -14,6 +14,11 @@ test("creates the users and books schema", () => {
   assert.ok(tables.includes("users"));
   assert.ok(tables.includes("books"));
   assert.ok(tables.includes("sessions"));
+  const bookColumns = database
+    .prepare("PRAGMA table_info(books)")
+    .all()
+    .map(({ name }) => name);
+  assert.ok(bookColumns.includes("reading_status"));
   database.close();
 });
 

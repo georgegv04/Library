@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Library</title>
 
-    <link rel="stylesheet" href="style.css?v=15" />
-    <script src="script.js?v=12" defer></script>
+    <link rel="stylesheet" href="style.css?v=16" />
+    <script src="script.js?v=13" defer></script>
   </head>
 
   <body>
@@ -94,11 +94,31 @@
             />
           </div>
 
-          <div class="checkbox-group">
-            <input type="checkbox" id="read-status" name="read-status" />
-
-            <label for="read-status"> I have read this book </label>
-          </div>
+          <fieldset class="status-picker">
+            <legend>Reading status</legend>
+            <div class="status-options">
+              <label class="status-option status-option-want">
+                <input type="radio" name="read-status" value="Want to read" checked />
+                <span class="status-option-mark">＋</span>
+                <span><strong>Want to read</strong><small>Save it for later</small></span>
+              </label>
+              <label class="status-option status-option-reading">
+                <input type="radio" name="read-status" value="Currently reading" />
+                <span class="status-option-mark">◐</span>
+                <span><strong>Currently reading</strong><small>In progress now</small></span>
+              </label>
+              <label class="status-option status-option-finished">
+                <input type="radio" name="read-status" value="Finished" />
+                <span class="status-option-mark">✓</span>
+                <span><strong>Finished</strong><small>Completed reading</small></span>
+              </label>
+              <label class="status-option status-option-dnf">
+                <input type="radio" name="read-status" value="Did not finish" />
+                <span class="status-option-mark">×</span>
+                <span><strong>Did not finish</strong><small>Stopped before the end</small></span>
+              </label>
+            </div>
+          </fieldset>
 
           <div class="button-container">
             <button type="button" class="cancel-btn">Cancel</button>
@@ -184,14 +204,14 @@
             />
           </div>
 
-          <div class="checkbox-group">
-            <input
-              type="checkbox"
-              id="edit-read-status"
-              name="edit-read-status"
-            />
-
-            <label for="edit-read-status"> I have read this book </label>
+          <div class="form-group">
+            <label for="edit-read-status">Reading status</label>
+            <select id="edit-read-status" name="edit-read-status">
+              <option value="Want to read">Want to read</option>
+              <option value="Currently reading">Currently reading</option>
+              <option value="Finished">Finished</option>
+              <option value="Did not finish">Did not finish</option>
+            </select>
           </div>
 
           <div class="button-container">
