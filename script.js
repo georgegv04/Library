@@ -105,7 +105,6 @@ const libraryHeader = document.querySelector(".library-header");
 const titleInput = document.querySelector("#title");
 const authorInput = document.querySelector("#author");
 const pagesInput = document.querySelector("#pages");
-const coverUrlInput = document.querySelector("#cover-url");
 const readStatusInputs = document.querySelectorAll('input[name="read-status"]');
 
 const editTitleInput = document.querySelector("#edit-title");
@@ -114,10 +113,7 @@ const editAuthorInput = document.querySelector("#edit-author");
 
 const editPagesInput = document.querySelector("#edit-pages");
 
-const editDateAddedInput = document.querySelector("#edit-date-added");
 const editRatingInput = document.querySelector("#edit-rating");
-
-const editCoverUrlInput = document.querySelector("#edit-cover-url");
 
 const editReadStatusInput = document.querySelector("#edit-read-status");
 
@@ -166,7 +162,6 @@ function openEditModal(book) {
   editTitleInput.value = book.title;
   editAuthorInput.value = book.author;
   editPagesInput.value = book.pages;
-  editDateAddedInput.value = book.dateAdded || getTodayDate();
   editRatingInput.value = String(book.rating || 0);
 
   editReadStatusInput.value = book.readStatus;
@@ -1046,7 +1041,6 @@ bookForm.addEventListener("submit", async (event) => {
   const title = titleInput.value.trim();
   const author = authorInput.value.trim();
   const pages = pagesInput.value.trim();
-  const customCoverUrl = coverUrlInput.value.trim();
 
   if (!title || !author || !pages) {
     return;
@@ -1058,7 +1052,7 @@ bookForm.addEventListener("submit", async (event) => {
   submitBookBtn.textContent = "Finding cover...";
 
   try {
-    const coverUrl = customCoverUrl || (await getBookCover(title, author));
+    const coverUrl = await getBookCover(title, author);
 
     await library.addBook(title, author, pages, readStatus, coverUrl);
 
@@ -1090,15 +1084,11 @@ editBookForm.addEventListener("submit", async (event) => {
 
   const updatedPages = editPagesInput.value.trim();
 
-  const updatedDateAdded = editDateAddedInput.value;
-
   const updatedRating = Number(editRatingInput.value);
-
-  const customCoverUrl = editCoverUrlInput.value.trim();
 
   const updatedReadStatus = editReadStatusInput.value;
 
-  if (!updatedTitle || !updatedAuthor || !updatedPages || !updatedDateAdded) {
+  if (!updatedTitle || !updatedAuthor || !updatedPages) {
     return;
   }
 
@@ -1117,9 +1107,7 @@ editBookForm.addEventListener("submit", async (event) => {
   try {
     let updatedCoverUrl = book.coverUrl;
 
-    if (customCoverUrl) {
-      updatedCoverUrl = customCoverUrl;
-    } else if (
+    if (
       titleOrAuthorChanged ||
       !book.coverUrl ||
       book.coverUrl === "images/default-cover.png"
@@ -1136,7 +1124,7 @@ editBookForm.addEventListener("submit", async (event) => {
       author: updatedAuthor,
       pages: updatedPages,
       readStatus: updatedReadStatus,
-      dateAdded: updatedDateAdded,
+      dateAdded: book.dateAdded || getTodayDate(),
       rating: updatedRating,
       coverUrl: updatedCoverUrl,
       description: titleOrAuthorChanged ? null : book.description,
