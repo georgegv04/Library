@@ -38,11 +38,12 @@ test("signup, sessions, protected books, logout, and login persistence work toge
 
   const createBook = await fetch(`${baseUrl}/api/books`, {
     method: "POST", headers: { "Content-Type": "application/json", Cookie: cookie },
-    body: JSON.stringify({ title: "Test Book", author: "Test Author", pages: 123, readStatus: "Currently reading" }),
+    body: JSON.stringify({ title: "Test Book", author: "Test Author", pages: 123, currentPage: 41, readStatus: "Currently reading" }),
   });
   assert.equal(createBook.status, 201);
   const createdBook = (await createBook.json()).book;
   assert.equal(createdBook.readStatus, "Currently reading");
+  assert.equal(createdBook.currentPage, 41);
 
   const list = await fetch(`${baseUrl}/api/books`, { headers: { Cookie: cookie } });
   assert.equal(list.status, 200);
@@ -89,7 +90,7 @@ test("supports each reading status and rejects unknown statuses", { timeout: 10_
     body: JSON.stringify({ name: "Status Reader", email: "status@example.com", password: "password123" }),
   });
   const cookie = signup.headers.get("set-cookie").split(";")[0];
-  const statuses = ["Want to read", "Currently reading", "Finished", "Did not finish"];
+  const statuses = ["Want to read", "Currently reading", "Finished"];
 
   for (const [index, readStatus] of statuses.entries()) {
     const response = await fetch(`${baseUrl}/api/books`, {
@@ -105,4 +106,39 @@ test("supports each reading status and rejects unknown statuses", { timeout: 10_
     body: JSON.stringify({ title: "Invalid", author: "An Author", pages: 100, readStatus: "Somewhere else" }),
   });
   assert.equal(invalid.status, 400);
+
+  const beyondLastPage = await fetch(`${baseUrl}/api/books`, {
+    method: "POST", headers: { "Content-Type": "application/json", Cookie: cookie },
+    body: JSON.stringify({ title: "Too Far", author: "An Author", pages: 100, currentPage: 101 }),
+  });
+  assert.equal(beyondLastPage.status, 400);
+
+  const finished = await fetch(`${baseUrl}/api/books`, {
+    method: "POST", headers: { "Content-Type": "application/json", Cookie: cookie },
+    body: JSON.stringify({ title: "Complete", author: "An Author", pages: 240, currentPage: 12, readStatus: "Finished" }),
+  });
+  assert.equal((await finished.json()).book.currentPage, 240);
+
+  const wantToRead = await fetch(`${baseUrl}/api/books`, {
+    method: "POST", headers: { "Content-Type": "application/json", Cookie: cookie },
+    body: JSON.stringify({ title: "Later", author: "An Author", pages: 180, currentPage: 90, rating: 5, readStatus: "Want to read" }),
+  });
+  const wantToReadBook = (await wantToRead.json()).book;
+  assert.equal(wantToReadBook.currentPage, 0);
+  assert.equal(wantToReadBook.rating, 0);
+
+  const rateAfterStarting = await fetch(`${baseUrl}/api/books/${wantToReadBook.id}`, {
+    method: "PUT", headers: { "Content-Type": "application/json", Cookie: cookie },
+    body: JSON.stringify({ ...wantToReadBook, currentPage: 20, rating: 4, readStatus: "Currently reading" }),
+  });
+  const ratedBook = (await rateAfterStarting.json()).book;
+  assert.equal(ratedBook.rating, 4);
+
+  const returnToWantToRead = await fetch(`${baseUrl}/api/books/${wantToReadBook.id}`, {
+    method: "PUT", headers: { "Content-Type": "application/json", Cookie: cookie },
+    body: JSON.stringify({ ...ratedBook, rating: 0, readStatus: "Want to read" }),
+  });
+  const preservedBook = (await returnToWantToRead.json()).book;
+  assert.equal(preservedBook.currentPage, 0);
+  assert.equal(preservedBook.rating, 4);
 });

@@ -19,6 +19,7 @@ test("creates the users and books schema", () => {
     .all()
     .map(({ name }) => name);
   assert.ok(bookColumns.includes("reading_status"));
+  assert.ok(bookColumns.includes("current_page"));
   database.close();
 });
 

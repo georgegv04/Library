@@ -22,9 +22,10 @@ const schema = `
     title TEXT NOT NULL CHECK (length(trim(title)) > 0),
     author TEXT NOT NULL CHECK (length(trim(author)) > 0),
     pages INTEGER NOT NULL CHECK (pages > 0),
+    current_page INTEGER NOT NULL DEFAULT 0 CHECK (current_page >= 0),
     read_status INTEGER NOT NULL DEFAULT 0 CHECK (read_status IN (0, 1)),
     reading_status TEXT NOT NULL DEFAULT 'Want to read'
-      CHECK (reading_status IN ('Want to read', 'Currently reading', 'Finished', 'Did not finish')),
+      CHECK (reading_status IN ('Want to read', 'Currently reading', 'Finished')),
     cover_url TEXT,
     description TEXT,
     rating INTEGER NOT NULL DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
@@ -65,7 +66,7 @@ export function openDatabase(databasePath = defaultDatabasePath) {
   if (!bookColumns.some(({ name }) => name === "reading_status")) {
     database.exec(`
       ALTER TABLE books ADD COLUMN reading_status TEXT NOT NULL DEFAULT 'Want to read'
-        CHECK (reading_status IN ('Want to read', 'Currently reading', 'Finished', 'Did not finish'));
+        CHECK (reading_status IN ('Want to read', 'Currently reading', 'Finished'));
       UPDATE books
       SET reading_status = CASE
         WHEN read_status = 1 THEN 'Finished'
@@ -73,6 +74,21 @@ export function openDatabase(databasePath = defaultDatabasePath) {
       END;
     `);
   }
+  if (!bookColumns.some(({ name }) => name === "current_page")) {
+    database.exec(`
+      ALTER TABLE books ADD COLUMN current_page INTEGER NOT NULL DEFAULT 0
+        CHECK (current_page >= 0);
+      UPDATE books
+      SET current_page = pages
+      WHERE reading_status = 'Finished' OR read_status = 1;
+    `);
+  }
+  database.exec(`
+    UPDATE books SET reading_status = 'Currently reading'
+    WHERE reading_status = 'Did not finish';
+    UPDATE books SET current_page = 0 WHERE reading_status = 'Want to read';
+    UPDATE books SET current_page = pages WHERE reading_status = 'Finished';
+  `);
 
   return database;
 }

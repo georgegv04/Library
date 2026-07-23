@@ -23,10 +23,10 @@ function getStoredBooks() {
 const library = {
   booksList: [],
 
-  async addBook(title, author, pages, readStatus, coverUrl, description = null) {
+  async addBook(title, author, pages, currentPage, readStatus, coverUrl, description = null) {
     const result = await apiRequest("/api/books", {
       method: "POST",
-      body: JSON.stringify({ title, author, pages, readStatus, coverUrl, description, rating: 0, dateAdded: getTodayDate() }),
+      body: JSON.stringify({ title, author, pages, currentPage, readStatus, coverUrl, description, rating: 0, dateAdded: getTodayDate() }),
     });
     this.booksList.unshift(result.book);
     return result.book;
@@ -55,6 +55,7 @@ const library = {
     await apiRequest(`/api/books/${encodeURIComponent(bookId)}`, { method: "DELETE" });
     this.booksList = this.booksList.filter((book) => book.id !== bookId);
   },
+
 };
 
 async function apiRequest(url, options = {}) {
@@ -105,6 +106,7 @@ const libraryHeader = document.querySelector(".library-header");
 const titleInput = document.querySelector("#title");
 const authorInput = document.querySelector("#author");
 const pagesInput = document.querySelector("#pages");
+const currentPageInput = document.querySelector("#current-page");
 const readStatusInputs = document.querySelectorAll('input[name="read-status"]');
 
 const editTitleInput = document.querySelector("#edit-title");
@@ -112,6 +114,7 @@ const editTitleInput = document.querySelector("#edit-title");
 const editAuthorInput = document.querySelector("#edit-author");
 
 const editPagesInput = document.querySelector("#edit-pages");
+const editCurrentPageInput = document.querySelector("#edit-current-page");
 
 const editRatingInput = document.querySelector("#edit-rating");
 
@@ -122,6 +125,8 @@ const detailsTitle = document.querySelector(".details-title");
 const detailsAuthor = document.querySelector(".details-author");
 const detailsPages = document.querySelector(".details-pages");
 const detailsStatus = document.querySelector(".details-status");
+const detailsProgressText = document.querySelector(".details-progress-text");
+const detailsProgressFill = document.querySelector(".details-progress-fill");
 const detailsDate = document.querySelector(".details-date");
 const detailsDescription = document.querySelector(".details-description");
 const detailsRatingDisplay = document.querySelector(
@@ -162,9 +167,12 @@ function openEditModal(book) {
   editTitleInput.value = book.title;
   editAuthorInput.value = book.author;
   editPagesInput.value = book.pages;
+  editCurrentPageInput.value = book.currentPage || 0;
+  editCurrentPageInput.max = String(book.pages);
   editRatingInput.value = String(book.rating || 0);
 
   editReadStatusInput.value = book.readStatus;
+  editRatingInput.disabled = book.readStatus === "Want to read";
 
   editModalOverlay.classList.add("active");
   editTitleInput.focus();
@@ -185,7 +193,6 @@ function getFallbackDescription(book) {
     "Want to read": "It is waiting on your reading list.",
     "Currently reading": "You are currently reading it.",
     Finished: "You have finished reading it.",
-    "Did not finish": "You stopped reading it before the end.",
   };
   const readingNote = readingNotes[book.readStatus] || readingNotes["Want to read"];
 
@@ -200,14 +207,25 @@ function formatBookDate(date) {
   }).format(new Date(`${date || getTodayDate()}T00:00:00`));
 }
 
-function updateRatingDisplay(rating) {
+function getReadingProgress(book) {
+  const totalPages = Math.max(1, Number(book.pages) || 1);
+  const currentPage = Math.min(totalPages, Math.max(0, Number(book.currentPage) || 0));
+  return {
+    currentPage,
+    percentage: Math.round((currentPage / totalPages) * 100),
+  };
+}
+
+function updateRatingDisplay(rating, readStatus) {
+  const ratingLocked = readStatus === "Want to read";
   detailsRatingStars.forEach((star, index) => {
-    star.classList.toggle("selected", index < rating);
+    star.classList.toggle("selected", !ratingLocked && index < rating);
   });
 
+  detailsRatingDisplay.classList.toggle("rating-locked", ratingLocked);
   detailsRatingDisplay.setAttribute(
     "aria-label",
-    rating ? `${rating} out of 5 stars` : "Not rated",
+    ratingLocked ? "Read this book before rating it" : rating ? `${rating} out of 5 stars` : "Not rated",
   );
 }
 
@@ -248,8 +266,11 @@ async function openDetailsModal(book) {
   detailsAuthor.textContent = `by ${book.author}`;
   detailsPages.textContent = `${book.pages} pages`;
   detailsStatus.textContent = book.readStatus;
+  const progress = getReadingProgress(book);
+  detailsProgressText.textContent = `${progress.currentPage} of ${book.pages} pages · ${progress.percentage}%`;
+  detailsProgressFill.style.width = `${progress.percentage}%`;
   detailsDate.textContent = formatBookDate(book.dateAdded);
-  updateRatingDisplay(book.rating || 0);
+  updateRatingDisplay(book.rating || 0, book.readStatus);
   detailsDescription.textContent =
     book.description || "Finding a short description…";
 
@@ -282,6 +303,33 @@ addNewBookBtn.addEventListener("click", openAddModal);
 cancelBtn.addEventListener("click", closeAddModal);
 
 cancelEditBtn.addEventListener("click", closeEditModal);
+
+pagesInput.addEventListener("input", () => {
+  currentPageInput.max = pagesInput.value;
+});
+
+editPagesInput.addEventListener("input", () => {
+  editCurrentPageInput.max = editPagesInput.value;
+});
+
+readStatusInputs.forEach((input) => {
+  input.addEventListener("change", () => {
+    if (input.checked && input.value === "Want to read") {
+      currentPageInput.value = "0";
+    } else if (input.checked && input.value === "Finished" && pagesInput.value) {
+      currentPageInput.value = pagesInput.value;
+    }
+  });
+});
+
+editReadStatusInput.addEventListener("change", () => {
+  editRatingInput.disabled = editReadStatusInput.value === "Want to read";
+  if (editReadStatusInput.value === "Want to read") {
+    editCurrentPageInput.value = "0";
+  } else if (editReadStatusInput.value === "Finished" && editPagesInput.value) {
+    editCurrentPageInput.value = editPagesInput.value;
+  }
+});
 
 closeEditBtn.addEventListener("click", closeEditModal);
 closeDetailsBtn.addEventListener("click", closeDetailsModal);
@@ -349,6 +397,7 @@ document.addEventListener("keydown", (event) => {
   if (ratingModalOverlay.classList.contains("active")) {
     closeRatingModal();
   }
+
 });
 
 function normalizeBookText(value = "") {
@@ -897,6 +946,26 @@ function createBookCard(book) {
   topGroup.appendChild(authorGroup);
   topGroup.appendChild(pagesGroup);
 
+  const progress = getReadingProgress(book);
+  const progressGroup = document.createElement("div");
+  progressGroup.className = "book-progress";
+  progressGroup.setAttribute("aria-label", `${progress.percentage}% read`);
+  const progressHeader = document.createElement("div");
+  progressHeader.className = "book-progress-header";
+  const progressLabel = document.createElement("span");
+  progressLabel.textContent = "Reading progress";
+  const progressValue = document.createElement("span");
+  progressValue.textContent = `${progress.currentPage} / ${book.pages} · ${progress.percentage}%`;
+  progressHeader.append(progressLabel, progressValue);
+  const progressTrack = document.createElement("div");
+  progressTrack.className = "book-progress-track";
+  const progressFill = document.createElement("div");
+  progressFill.className = "book-progress-fill";
+  progressFill.style.width = `${progress.percentage}%`;
+  progressTrack.appendChild(progressFill);
+  progressGroup.append(progressHeader, progressTrack);
+  topGroup.appendChild(progressGroup);
+
   const bottomGroup = document.createElement("div");
   bottomGroup.classList.add("bottom-group");
 
@@ -914,7 +983,6 @@ function createBookCard(book) {
     "Want to read": { icon: "images/not-read-status.svg", className: "status-want" },
     "Currently reading": { icon: "images/open-book1.svg", className: "status-reading" },
     Finished: { icon: "images/read-status.svg", className: "status-finished" },
-    "Did not finish": { icon: "images/not-read-status.svg", className: "status-dnf" },
   };
   const presentation = statusPresentation[book.readStatus] || statusPresentation["Want to read"];
   statusIcon.src = presentation.icon;
@@ -927,10 +995,18 @@ function createBookCard(book) {
   const ratingBadge = document.createElement("button");
   ratingBadge.classList.add("rating-badge");
   ratingBadge.type = "button";
-  ratingBadge.textContent = book.rating ? `★ ${book.rating}/5` : "☆ Rate";
+  const ratingLocked = book.readStatus === "Want to read";
+  ratingBadge.disabled = ratingLocked;
+  ratingBadge.textContent = ratingLocked
+    ? "Read to rate"
+    : book.rating
+      ? `★ ${book.rating}/5`
+      : "☆ Rate";
   ratingBadge.setAttribute(
     "aria-label",
-    book.rating
+    ratingLocked
+      ? `Start reading ${book.title} before rating it`
+      : book.rating
       ? `Rated ${book.rating} out of 5. Change rating for ${book.title}`
       : `Rate ${book.title}`,
   );
@@ -1016,9 +1092,7 @@ function createBookCard(book) {
   return bookCard;
 }
 
-function updateLibraryInfo() {
-  const numberOfBooks = library.booksList.length;
-
+function updateLibraryInfo(numberOfBooks = library.booksList.length) {
   booksCount.textContent =
     numberOfBooks === 1 ? "1 Book" : `${numberOfBooks} Books`;
 
@@ -1041,6 +1115,7 @@ bookForm.addEventListener("submit", async (event) => {
   const title = titleInput.value.trim();
   const author = authorInput.value.trim();
   const pages = pagesInput.value.trim();
+  const currentPage = currentPageInput.value.trim() || "0";
 
   if (!title || !author || !pages) {
     return;
@@ -1054,7 +1129,7 @@ bookForm.addEventListener("submit", async (event) => {
   try {
     const coverUrl = await getBookCover(title, author);
 
-    await library.addBook(title, author, pages, readStatus, coverUrl);
+    await library.addBook(title, author, pages, currentPage, readStatus, coverUrl);
 
     renderLibrary();
     closeAddModal();
@@ -1083,6 +1158,7 @@ editBookForm.addEventListener("submit", async (event) => {
   const updatedAuthor = editAuthorInput.value.trim();
 
   const updatedPages = editPagesInput.value.trim();
+  const updatedCurrentPage = editCurrentPageInput.value.trim() || "0";
 
   const updatedRating = Number(editRatingInput.value);
 
@@ -1123,6 +1199,7 @@ editBookForm.addEventListener("submit", async (event) => {
       title: updatedTitle,
       author: updatedAuthor,
       pages: updatedPages,
+      currentPage: updatedCurrentPage,
       readStatus: updatedReadStatus,
       dateAdded: book.dateAdded || getTodayDate(),
       rating: updatedRating,
