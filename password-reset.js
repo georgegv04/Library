@@ -10,12 +10,13 @@ const intro = document.querySelector("#form-intro");
 const message = document.querySelector(".form-message");
 const resultBox = document.querySelector(".reset-result");
 const submitButton = document.querySelector(".submit-button");
-const resetMode = location.pathname === "/reset-password";
-const token = new URLSearchParams(location.search).get("token");
+let resetMode = location.pathname === "/reset-password";
+let token = new URLSearchParams(location.search).get("token");
 
-if (resetMode) {
+function showNewPasswordFields() {
+  resetMode = true;
   title.textContent = "Choose a new password";
-  intro.textContent = "Enter a new password for your library account.";
+  intro.textContent = "Enter and repeat your new password.";
   emailField.hidden = true;
   emailInput.required = false;
   passwordField.hidden = false;
@@ -23,11 +24,15 @@ if (resetMode) {
   passwordInput.required = true;
   confirmInput.required = true;
   submitButton.innerHTML = "Reset password <span>→</span>";
+  submitButton.disabled = false;
+  passwordInput.focus();
   if (!token) {
     message.textContent = "This reset link is invalid. Request a new one.";
     submitButton.disabled = true;
   }
 }
+
+if (resetMode) showNewPasswordFields();
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -39,7 +44,7 @@ form.addEventListener("submit", async (event) => {
     return;
   }
   submitButton.disabled = true;
-  submitButton.textContent = resetMode ? "Resetting password…" : "Creating reset link…";
+  submitButton.textContent = resetMode ? "Resetting password…" : "Checking email…";
   try {
     const response = await fetch(resetMode ? "/api/auth/reset-password" : "/api/auth/forgot-password", {
       method: "POST",
@@ -54,17 +59,20 @@ form.addEventListener("submit", async (event) => {
       submitButton.hidden = true;
     } else {
       if (body.resetUrl) {
-        location.assign(body.resetUrl);
+        const resetAddress = new URL(body.resetUrl, location.origin);
+        token = resetAddress.searchParams.get("token");
+        history.replaceState({}, "", resetAddress.pathname + resetAddress.search);
+        showNewPasswordFields();
         return;
       }
       resultBox.textContent = body.message;
       submitButton.disabled = false;
-      submitButton.innerHTML = "Send another link <span>→</span>";
+      submitButton.innerHTML = "Continue <span>→</span>";
     }
     resultBox.hidden = false;
   } catch (error) {
     message.textContent = error.message;
     submitButton.disabled = false;
-    submitButton.innerHTML = resetMode ? "Reset password <span>→</span>" : "Send reset link <span>→</span>";
+    submitButton.innerHTML = resetMode ? "Reset password <span>→</span>" : "Continue <span>→</span>";
   }
 });
