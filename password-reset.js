@@ -53,15 +53,11 @@ form.addEventListener("submit", async (event) => {
       form.querySelectorAll("label").forEach((label) => { label.hidden = true; });
       submitButton.hidden = true;
     } else {
-      resultBox.textContent = body.resetUrl
-        ? "Your local password reset link is ready."
-        : body.message;
       if (body.resetUrl) {
-        const link = document.createElement("a");
-        link.href = body.resetUrl;
-        link.textContent = "Reset your password →";
-        resultBox.append(document.createElement("br"), link);
+        location.assign(body.resetUrl);
+        return;
       }
+      resultBox.textContent = body.message;
       submitButton.disabled = false;
       submitButton.innerHTML = "Send another link <span>→</span>";
     }

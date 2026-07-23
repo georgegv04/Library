@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { createSessionToken, hashPassword, hashSessionToken, verifyPassword } from "./auth.js";
 import { openDatabase } from "./database.js";
+import { isEmailConfigured, sendPasswordResetEmail } from "./mailer.js";
 
 const projectDirectory = fileURLToPath(new URL(".", import.meta.url));
 const port = Number(process.env.PORT) || 4173;
@@ -121,7 +122,7 @@ async function handleAuth(request, response, pathname) {
     if (authRateLimited(request)) return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
     const { email: rawEmail } = await readJson(request);
     const email = String(rawEmail || "").trim().toLowerCase();
-    const user = database.prepare("SELECT id FROM users WHERE email = ?").get(email);
+    const user = database.prepare("SELECT id, name, email FROM users WHERE email = ?").get(email);
     let resetUrl;
     if (user) {
       database.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").run(user.id);
@@ -130,10 +131,21 @@ async function handleAuth(request, response, pathname) {
       database.prepare("INSERT INTO password_reset_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)")
         .run(hashSessionToken(token), user.id, expiresAt);
       resetUrl = `/reset-password?token=${encodeURIComponent(token)}`;
-      if (process.env.NODE_ENV !== "production") console.log(`Password reset link: http://localhost:${port}${resetUrl}`);
+      if (isEmailConfigured()) {
+        const baseUrl = String(process.env.PUBLIC_BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
+        try {
+          await sendPasswordResetEmail({ to: user.email, name: user.name, resetUrl: `${baseUrl}${resetUrl}` });
+        } catch (error) {
+          database.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").run(user.id);
+          console.error("Could not send password reset email:", error.message);
+          return sendJson(response, 502, { error: "The reset email could not be sent. Please try again later." });
+        }
+      } else if (process.env.NODE_ENV !== "production") {
+        console.log(`Password reset link: http://localhost:${port}${resetUrl}`);
+      }
     }
-    const body = { message: "If that account exists, a password reset link has been created." };
-    if (resetUrl && process.env.NODE_ENV !== "production") body.resetUrl = resetUrl;
+    const body = { message: "If that account exists, check its inbox for a password reset link." };
+    if (resetUrl && !isEmailConfigured() && process.env.NODE_ENV !== "production") body.resetUrl = resetUrl;
     return sendJson(response, 200, body);
   }
   if (pathname === "/api/auth/reset-password" && request.method === "POST") {

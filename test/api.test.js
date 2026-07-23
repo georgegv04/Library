@@ -12,7 +12,13 @@ test("signup, sessions, protected books, password reset, and logout work togethe
   const port = 44000 + Math.floor(Math.random() * 1000);
   const child = spawn(process.execPath, ["server.js"], {
     cwd: projectDirectory,
-    env: { ...process.env, PORT: String(port), LIBRARY_DB_PATH: join(directory, "test.sqlite") },
+    env: {
+      ...process.env,
+      PORT: String(port),
+      LIBRARY_DB_PATH: join(directory, "test.sqlite"),
+      GMAIL_USER: "",
+      GMAIL_APP_PASSWORD: "",
+    },
     stdio: "ignore",
   });
   context.after(() => { child.kill("SIGTERM"); rmSync(directory, { recursive: true, force: true }); });
@@ -48,6 +54,16 @@ test("signup, sessions, protected books, password reset, and logout work togethe
   assert.equal(logout.status, 200);
   const afterLogout = await fetch(`${baseUrl}/api/auth/me`, { headers: { Cookie: cookie } });
   assert.equal(afterLogout.status, 401);
+
+  const loginAgain = await fetch(`${baseUrl}/api/auth/login`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "reader@example.com", password: "password123" }),
+  });
+  assert.equal(loginAgain.status, 200);
+  const secondCookie = loginAgain.headers.get("set-cookie").split(";")[0];
+  const libraryAfterLogin = await fetch(`${baseUrl}/api/books`, { headers: { Cookie: secondCookie } });
+  assert.equal(libraryAfterLogin.status, 200);
+  assert.equal((await libraryAfterLogin.json()).books.length, 1);
 
   const forgot = await fetch(`${baseUrl}/api/auth/forgot-password`, {
     method: "POST", headers: { "Content-Type": "application/json" },
