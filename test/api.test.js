@@ -18,6 +18,7 @@ test("signup, sessions, protected books, password reset, and logout work togethe
       LIBRARY_DB_PATH: join(directory, "test.sqlite"),
       GMAIL_USER: "",
       GMAIL_APP_PASSWORD: "",
+      NODE_ENV: "test",
     },
     stdio: "ignore",
   });
@@ -34,6 +35,7 @@ test("signup, sessions, protected books, password reset, and logout work togethe
     body: JSON.stringify({ name: "Test Reader", email: "reader@example.com", password: "password123" }),
   });
   assert.equal(signup.status, 201);
+  await signup.json();
   const cookie = signup.headers.get("set-cookie").split(";")[0];
   assert.match(cookie, /^library_session=/);
 
@@ -70,7 +72,21 @@ test("signup, sessions, protected books, password reset, and logout work togethe
     body: JSON.stringify({ email: "reader@example.com" }),
   });
   assert.equal(forgot.status, 200);
-  const resetUrl = (await forgot.json()).resetUrl;
+  const emailCode = (await forgot.json()).testCode;
+  assert.match(emailCode, /^\d{6}$/);
+
+  const wrongEmailCode = await fetch(`${baseUrl}/api/auth/verify-reset-code`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "reader@example.com", code: "000000" }),
+  });
+  assert.equal(wrongEmailCode.status, 401);
+
+  const verifyCode = await fetch(`${baseUrl}/api/auth/verify-reset-code`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "reader@example.com", code: emailCode }),
+  });
+  assert.equal(verifyCode.status, 200);
+  const resetUrl = (await verifyCode.json()).resetUrl;
   assert.match(resetUrl, /^\/reset-password\?token=/);
   const resetToken = new URL(resetUrl, baseUrl).searchParams.get("token");
 
