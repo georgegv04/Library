@@ -20,11 +20,7 @@ label { display: grid; gap: 8px; margin: 16px 0; font: 700 .82rem Arial, sans-se
 input { width: 100%; padding: 13px 14px; border: 1px solid #cfc3b2; border-radius: 5px; background: #fffdf8; font: 1rem Arial, sans-serif; }
 input:focus { outline: 2px solid rgba(157,113,55,.28); border-color: #9d7137; }
 small { color: #817568; font-weight: 400; }
-.forgot-link { display: block; margin: -7px 0 18px; color: #795327; font: 700 .8rem Arial, sans-serif; text-align: right; }
 .form-message { min-height: 20px; margin: 10px 0; color: #a0302c; font: .85rem Arial, sans-serif; }
 .submit-button { width: 100%; padding: 14px 20px; border: 0; border-radius: 5px; background: var(--navy); color: white; font-weight: 700; cursor: pointer; }
 .submit-button:disabled { opacity: .65; cursor: wait; }
-.back-link { display: block; margin-top: 20px; color: #795327; font: 700 .8rem Arial, sans-serif; text-align: center; text-decoration: none; }
-.reset-result { margin: 15px 0; padding: 13px; border: 1px solid #b8c7ad; border-radius: 5px; background: #f1f6ed; color: #36512c; font: .85rem/1.55 Arial, sans-serif; }
-.reset-result a { color: #36512c; font-weight: 700; }
 @media (max-width: 800px) { main { grid-template-columns: 1fr; padding-top: 10px; } .welcome h1 { font-size: 3rem; } .auth-card { padding: 26px; } }

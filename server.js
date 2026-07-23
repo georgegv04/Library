@@ -1,13 +1,11 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
-import { randomInt } from "node:crypto";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createSessionToken, hashPassword, hashSessionToken, verifyPassword } from "./auth.js";
 import { openDatabase } from "./database.js";
-import { isEmailConfigured, sendPasswordResetCode } from "./mailer.js";
 
 const projectDirectory = fileURLToPath(new URL(".", import.meta.url));
 const port = Number(process.env.PORT) || 4173;
@@ -119,81 +117,6 @@ async function handleAuth(request, response, pathname) {
     if (token) database.prepare("DELETE FROM sessions WHERE token_hash = ?").run(hashSessionToken(token));
     return sendJson(response, 200, { ok: true }, { "Set-Cookie": sessionCookie("", 0) });
   }
-  if (pathname === "/api/auth/forgot-password" && request.method === "POST") {
-    if (authRateLimited(request)) return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
-    if (!isEmailConfigured() && process.env.NODE_ENV !== "test") {
-      return sendJson(response, 503, { error: "Password-reset email is not configured yet." });
-    }
-    const { email: rawEmail } = await readJson(request);
-    const email = String(rawEmail || "").trim().toLowerCase();
-    const user = database.prepare("SELECT id, name, email FROM users WHERE email = ?").get(email);
-    let testCode;
-    if (user) {
-      database.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").run(user.id);
-      const code = String(randomInt(100000, 1_000_000));
-      const expiresAt = new Date(Date.now() + 10 * 60_000).toISOString();
-      database.prepare("INSERT INTO password_reset_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)")
-        .run(await hashPassword(code), user.id, expiresAt);
-      if (process.env.NODE_ENV === "test") {
-        testCode = code;
-      } else {
-        try {
-          await sendPasswordResetCode({ to: user.email, name: user.name, code });
-        } catch (error) {
-          database.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").run(user.id);
-          console.error("Could not send password reset code:", error.message);
-          return sendJson(response, 502, { error: "The reset email could not be sent. Please try again." });
-        }
-      }
-    }
-    const body = { message: "If that account exists, a six-digit code was sent to its email." };
-    if (testCode) body.testCode = testCode;
-    return sendJson(response, 200, body);
-  }
-  if (pathname === "/api/auth/verify-reset-code" && request.method === "POST") {
-    if (authRateLimited(request)) return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
-    const input = await readJson(request);
-    const email = String(input.email || "").trim().toLowerCase();
-    const code = String(input.code || "").trim();
-    if (!/^\d{6}$/.test(code)) return sendJson(response, 400, { error: "Enter the six-digit code." });
-    const user = database.prepare("SELECT id FROM users WHERE email = ?").get(email);
-    const resetCode = user && database.prepare(`
-      SELECT token_hash FROM password_reset_tokens
-      WHERE user_id = ? AND expires_at > CURRENT_TIMESTAMP
-      ORDER BY created_at DESC LIMIT 1
-    `).get(user.id);
-    if (!resetCode || !(await verifyPassword(code, resetCode.token_hash))) {
-      return sendJson(response, 401, { error: "The code is incorrect or has expired." });
-    }
-    database.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").run(user.id);
-    const token = createSessionToken();
-    const expiresAt = new Date(Date.now() + 10 * 60_000).toISOString();
-    database.prepare("INSERT INTO password_reset_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)")
-      .run(hashSessionToken(token), user.id, expiresAt);
-    return sendJson(response, 200, { resetUrl: `/reset-password?token=${encodeURIComponent(token)}` });
-  }
-  if (pathname === "/api/auth/reset-password" && request.method === "POST") {
-    if (authRateLimited(request)) return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
-    const input = await readJson(request);
-    const token = String(input.token || "");
-    const password = String(input.password || "");
-    if (password.length < 8 || password.length > 128) return sendJson(response, 400, { error: "Password must be 8–128 characters." });
-    const reset = token && database.prepare(`SELECT user_id FROM password_reset_tokens WHERE token_hash = ? AND expires_at > CURRENT_TIMESTAMP`)
-      .get(hashSessionToken(token));
-    if (!reset) return sendJson(response, 400, { error: "This reset link is invalid or has expired." });
-    const passwordHash = await hashPassword(password);
-    database.exec("BEGIN IMMEDIATE");
-    try {
-      database.prepare("UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?").run(passwordHash, reset.user_id);
-      database.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").run(reset.user_id);
-      database.prepare("DELETE FROM sessions WHERE user_id = ?").run(reset.user_id);
-      database.exec("COMMIT");
-    } catch (error) {
-      database.exec("ROLLBACK");
-      throw error;
-    }
-    return sendJson(response, 200, { message: "Your password has been reset. You can now log in." });
-  }
   if (!["/api/auth/signup", "/api/auth/login"].includes(pathname) || request.method !== "POST") return false;
   if (authRateLimited(request)) return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
   const input = await readJson(request);
@@ -252,7 +175,6 @@ function resolveRequestPath(pathname) {
   if (pathname === "/") return "index.html";
   if (pathname === "/library") return "library.html";
   if (pathname === "/login" || pathname === "/signup") return "auth.html";
-  if (pathname === "/forgot-password" || pathname === "/reset-password") return "password-reset.html";
   return pathname.replace(/^\/+/, "");
 }
 

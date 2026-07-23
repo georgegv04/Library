@@ -14,7 +14,6 @@ test("creates the users and books schema", () => {
   assert.ok(tables.includes("users"));
   assert.ok(tables.includes("books"));
   assert.ok(tables.includes("sessions"));
-  assert.ok(tables.includes("password_reset_tokens"));
   database.close();
 });
 
