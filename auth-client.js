@@ -12,8 +12,38 @@ const submitButton = document.querySelector(".submit-button");
 const formTitle = document.querySelector("#form-title");
 const formIntro = document.querySelector("#form-intro");
 const passwordHelp = document.querySelector("#password-help");
+const loggedOut = new URLSearchParams(location.search).has("logged-out");
 
 let mode = location.pathname === "/login" ? "login" : "signup";
+let logoutFieldsLocked = false;
+
+function clearLoggedOutCredentials() {
+  logoutFieldsLocked = true;
+  form.reset();
+  emailInput.value = "";
+  passwordInput.value = "";
+  emailInput.autocomplete = "off";
+  passwordInput.autocomplete = "new-password";
+  emailInput.readOnly = true;
+  passwordInput.readOnly = true;
+
+  // Password managers can fill a moment after the page loads, so clear again
+  // while the fields are still waiting for the user's first interaction.
+  [0, 100, 500].forEach((delay) => {
+    window.setTimeout(() => {
+      if (!logoutFieldsLocked) return;
+      emailInput.value = "";
+      passwordInput.value = "";
+    }, delay);
+  });
+}
+
+function unlockLoggedOutFields() {
+  if (!logoutFieldsLocked) return;
+  logoutFieldsLocked = false;
+  emailInput.readOnly = false;
+  passwordInput.readOnly = false;
+}
 
 function setMode(nextMode) {
   mode = nextMode;
@@ -38,6 +68,10 @@ function setMode(nextMode) {
 
 signupTab.addEventListener("click", () => setMode("signup"));
 loginTab.addEventListener("click", () => setMode("login"));
+[emailInput, passwordInput].forEach((input) => {
+  input.addEventListener("pointerdown", unlockLoggedOutFields);
+  input.addEventListener("focus", unlockLoggedOutFields);
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -66,10 +100,13 @@ form.addEventListener("submit", async (event) => {
 
 fetch("/api/auth/me").then((response) => { if (response.ok) location.href = "/library"; });
 setMode(mode);
+if (loggedOut) clearLoggedOutCredentials();
 
 window.addEventListener("pageshow", (event) => {
-  if (event.persisted || new URLSearchParams(location.search).has("logged-out")) {
+  if (event.persisted) {
     form.reset();
+    emailInput.value = "";
+    passwordInput.value = "";
     history.replaceState({}, "", mode === "signup" ? "/signup" : "/login");
   }
 });
