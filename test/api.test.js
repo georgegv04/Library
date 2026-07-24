@@ -142,3 +142,49 @@ test("supports each reading status and rejects unknown statuses", { timeout: 10_
   assert.equal(preservedBook.currentPage, 0);
   assert.equal(preservedBook.rating, 4);
 });
+
+test("the configured production recovery route resets only its account and can be used once", { timeout: 10_000 }, async (context) => {
+  const directory = mkdtempSync(join(tmpdir(), "library-reset-api-"));
+  const port = 46000 + Math.floor(Math.random() * 1000);
+  const resetToken = "test-only-reset-token-123456789";
+  const child = spawn(process.execPath, ["server.js"], {
+    cwd: projectDirectory,
+    env: {
+      ...process.env,
+      PORT: String(port),
+      LIBRARY_DB_PATH: join(directory, "test.sqlite"),
+      ONE_TIME_RESET_EMAIL: "owner@example.com",
+      ONE_TIME_RESET_TOKEN: resetToken,
+    },
+    stdio: "ignore",
+  });
+  context.after(() => { child.kill("SIGTERM"); rmSync(directory, { recursive: true, force: true }); });
+
+  const baseUrl = `http://127.0.0.1:${port}`;
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    try { if ((await fetch(baseUrl)).ok) break; } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  await fetch(`${baseUrl}/api/auth/signup`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: "Owner", email: "owner@example.com", password: "old-password" }),
+  });
+  const reset = await fetch(`${baseUrl}/api/auth/one-time-reset`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "owner@example.com", resetToken, password: "new-password" }),
+  });
+  assert.equal(reset.status, 200);
+
+  const login = await fetch(`${baseUrl}/api/auth/login`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "owner@example.com", password: "new-password" }),
+  });
+  assert.equal(login.status, 200);
+
+  const secondReset = await fetch(`${baseUrl}/api/auth/one-time-reset`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "owner@example.com", resetToken, password: "another-password" }),
+  });
+  assert.equal(secondReset.status, 410);
+});
