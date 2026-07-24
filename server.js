@@ -1,6 +1,5 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
-import { createHash, timingSafeEqual } from "node:crypto";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -14,8 +13,6 @@ const database = openDatabase(process.env.LIBRARY_DB_PATH);
 const sessionLifetimeSeconds = 60 * 60 * 24 * 30;
 const authAttempts = new Map();
 const readingStatuses = new Set(["Want to read", "Currently reading", "Finished"]);
-const oneTimeResetToken = process.env.ONE_TIME_RESET_TOKEN || "";
-const oneTimeResetEmail = String(process.env.ONE_TIME_RESET_EMAIL || "").trim().toLowerCase();
 
 const contentTypes = {
   ".css": "text/css; charset=utf-8", ".html": "text/html; charset=utf-8",
@@ -77,18 +74,6 @@ function authRateLimited(request) {
 
 function publicUser(user) { return { id: Number(user.id), name: user.name, email: user.email }; }
 
-function secretsMatch(received, expected) {
-  const receivedBuffer = Buffer.from(String(received || ""));
-  const expectedBuffer = Buffer.from(String(expected || ""));
-  return receivedBuffer.length === expectedBuffer.length
-    && receivedBuffer.length > 0
-    && timingSafeEqual(receivedBuffer, expectedBuffer);
-}
-
-function resetTokenHash(token) {
-  return createHash("sha256").update(token).digest("hex");
-}
-
 function serializeBook(book) {
   return {
     id: book.id, title: book.title, author: book.author, pages: Number(book.pages),
@@ -136,39 +121,6 @@ function createSession(userId) {
 }
 
 async function handleAuth(request, response, pathname) {
-  if (pathname === "/api/auth/one-time-reset" && request.method === "POST") {
-    if (oneTimeResetToken.length < 24 || !oneTimeResetEmail) {
-      return sendJson(response, 503, { error: "One-time password reset is not configured." });
-    }
-    const configuredTokenHash = resetTokenHash(oneTimeResetToken);
-    if (database.prepare("SELECT 1 FROM one_time_reset_uses WHERE token_hash = ?").get(configuredTokenHash)) {
-      return sendJson(response, 410, { error: "This one-time password reset has already been used." });
-    }
-    if (authRateLimited(request)) {
-      return sendJson(response, 429, { error: "Too many attempts. Please try again later." });
-    }
-    const input = await readJson(request);
-    const email = String(input.email || "").trim().toLowerCase();
-    const password = String(input.password || "");
-    if (!secretsMatch(input.resetToken, oneTimeResetToken) || email !== oneTimeResetEmail) {
-      return sendJson(response, 403, { error: "The reset details are not valid." });
-    }
-    if (password.length < 8 || password.length > 128) {
-      return sendJson(response, 400, { error: "Password must be 8–128 characters." });
-    }
-    const user = database.prepare("SELECT id FROM users WHERE email = ?").get(email);
-    if (!user) return sendJson(response, 404, { error: "That production account was not found." });
-    const passwordHash = await hashPassword(password);
-    const markedUsed = database.prepare("INSERT OR IGNORE INTO one_time_reset_uses (token_hash) VALUES (?)")
-      .run(configuredTokenHash);
-    if (!markedUsed.changes) {
-      return sendJson(response, 410, { error: "This one-time password reset has already been used." });
-    }
-    database.prepare("UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
-      .run(passwordHash, user.id);
-    database.prepare("DELETE FROM sessions WHERE user_id = ?").run(user.id);
-    return sendJson(response, 200, { ok: true });
-  }
   if (pathname === "/api/auth/me" && request.method === "GET") {
     const user = currentUser(request);
     return sendJson(response, user ? 200 : 401, user ? { user: publicUser(user) } : { error: "Not authenticated." });
@@ -239,7 +191,6 @@ function resolveRequestPath(pathname) {
   if (pathname === "/") return "index.html";
   if (pathname === "/library") return "library.html";
   if (pathname === "/login" || pathname === "/signup") return "auth.html";
-  if (pathname === "/one-time-reset") return "one-time-reset.html";
   return pathname.replace(/^\/+/, "");
 }
 

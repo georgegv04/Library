@@ -50,11 +50,6 @@ const schema = `
   CREATE INDEX IF NOT EXISTS sessions_user_id_index ON sessions(user_id);
   CREATE INDEX IF NOT EXISTS sessions_expires_at_index ON sessions(expires_at);
 
-  CREATE TABLE IF NOT EXISTS one_time_reset_uses (
-    token_hash TEXT PRIMARY KEY,
-    used_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ) STRICT;
-
 `;
 
 export function openDatabase(databasePath = defaultDatabasePath) {
