@@ -28,7 +28,7 @@ function setMode(nextMode) {
   confirmField.hidden = !signup;
   nameInput.required = signup;
   confirmInput.required = signup;
-  passwordInput.autocomplete = "off";
+  passwordInput.autocomplete = signup ? "new-password" : "current-password";
   formTitle.textContent = signup ? "Create your account" : "Welcome back";
   formIntro.textContent = signup ? "Start a personal library that belongs only to you." : "Return to your books and reading memories.";
   passwordHelp.hidden = !signup;
