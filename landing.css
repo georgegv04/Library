@@ -358,16 +358,30 @@ a {
   box-shadow: 0 9px 18px rgba(13, 27, 42, 0.23);
 }
 
-.featured-cover span {
-  font-size: 1.05rem;
+.featured-cover .cover-title {
+  font-size: 0.72rem;
   font-weight: 700;
-  line-height: 1.35;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+
+.saint-portrait {
+  width: 92px;
+  height: 112px;
+  margin: 12px 0 8px;
+  border: 1px solid rgba(225, 196, 115, 0.72);
+  border-radius: 46% 46% 5px 5px;
+  object-fit: cover;
+  object-position: center 28%;
+  filter: sepia(0.14) saturate(0.82);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.28);
 }
 
 .featured-cover small {
   margin-top: auto;
-  padding-top: 30px;
-  font-size: 0.49rem;
+  padding-top: 3px;
+  font-size: 0.44rem;
+  letter-spacing: 0.04em;
 }
 
 .current-copy {
@@ -1215,8 +1229,13 @@ footer > a:last-child {
     padding: 10px;
   }
 
-  .featured-cover span {
-    font-size: 0.8rem;
+  .featured-cover .cover-title {
+    font-size: 0.62rem;
+  }
+
+  .saint-portrait {
+    width: 76px;
+    height: 94px;
   }
 
   .book-spines {
