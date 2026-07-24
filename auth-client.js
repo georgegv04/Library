@@ -12,13 +12,17 @@ const submitButton = document.querySelector(".submit-button");
 const formTitle = document.querySelector("#form-title");
 const formIntro = document.querySelector("#form-intro");
 const passwordHelp = document.querySelector("#password-help");
-const loggedOut = new URLSearchParams(location.search).has("logged-out");
+const welcomeEyebrow = document.querySelector("#welcome-eyebrow");
+const welcomeTitle = document.querySelector("#welcome-title");
+const welcomeCopy = document.querySelector("#welcome-copy");
+const entryParams = new URLSearchParams(location.search);
+const shouldClearCredentials = entryParams.has("logged-out") || entryParams.has("fresh");
 
 let mode = location.pathname === "/login" ? "login" : "signup";
-let logoutFieldsLocked = false;
+let credentialFieldsLocked = false;
 
-function clearLoggedOutCredentials() {
-  logoutFieldsLocked = true;
+function clearLoginCredentials() {
+  credentialFieldsLocked = true;
   form.reset();
   emailInput.value = "";
   passwordInput.value = "";
@@ -31,16 +35,16 @@ function clearLoggedOutCredentials() {
   // while the fields are still waiting for the user's first interaction.
   [0, 100, 500].forEach((delay) => {
     window.setTimeout(() => {
-      if (!logoutFieldsLocked) return;
+      if (!credentialFieldsLocked) return;
       emailInput.value = "";
       passwordInput.value = "";
     }, delay);
   });
 }
 
-function unlockLoggedOutFields() {
-  if (!logoutFieldsLocked) return;
-  logoutFieldsLocked = false;
+function unlockCredentialFields() {
+  if (!credentialFieldsLocked) return;
+  credentialFieldsLocked = false;
   emailInput.readOnly = false;
   passwordInput.readOnly = false;
 }
@@ -59,6 +63,13 @@ function setMode(nextMode) {
   nameInput.required = signup;
   confirmInput.required = signup;
   passwordInput.autocomplete = signup ? "new-password" : "current-password";
+  welcomeEyebrow.textContent = signup ? "Your private reading room" : "Welcome home";
+  welcomeTitle.textContent = signup
+    ? "Every beloved book, waiting on your shelf."
+    : "Your books have been waiting for you.";
+  welcomeCopy.textContent = signup
+    ? "Create a private collection that grows with every chapter of your reading life."
+    : "Return to your saved books, your reading progress, and the stories still waiting to be continued.";
   formTitle.textContent = signup ? "Create your account" : "Welcome back";
   formIntro.textContent = signup ? "Start a personal library that belongs only to you." : "Return to your books and reading memories.";
   passwordHelp.hidden = !signup;
@@ -67,10 +78,13 @@ function setMode(nextMode) {
 }
 
 signupTab.addEventListener("click", () => setMode("signup"));
-loginTab.addEventListener("click", () => setMode("login"));
+loginTab.addEventListener("click", () => {
+  setMode("login");
+  clearLoginCredentials();
+});
 [emailInput, passwordInput].forEach((input) => {
-  input.addEventListener("pointerdown", unlockLoggedOutFields);
-  input.addEventListener("focus", unlockLoggedOutFields);
+  input.addEventListener("pointerdown", unlockCredentialFields);
+  input.addEventListener("focus", unlockCredentialFields);
 });
 
 form.addEventListener("submit", async (event) => {
@@ -100,7 +114,7 @@ form.addEventListener("submit", async (event) => {
 
 fetch("/api/auth/me").then((response) => { if (response.ok) location.href = "/library"; });
 setMode(mode);
-if (loggedOut) clearLoggedOutCredentials();
+if (shouldClearCredentials) clearLoginCredentials();
 
 window.addEventListener("pageshow", (event) => {
   if (event.persisted) {

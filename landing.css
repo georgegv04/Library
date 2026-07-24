@@ -85,6 +85,24 @@ a {
   color: var(--gold-pale);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 24px;
+}
+
+.header-login {
+  padding: 8px 0;
+  color: rgba(255, 250, 241, 0.78);
+  font-size: 0.86rem;
+  transition: color 160ms ease;
+}
+
+.header-login:hover {
+  color: var(--gold-pale);
+}
+
 .header-link {
   justify-self: end;
   padding-bottom: 7px;
@@ -1156,6 +1174,14 @@ footer > a:last-child {
   }
 
   .header-link {
+    font-size: 0.75rem;
+  }
+
+  .header-actions {
+    gap: 14px;
+  }
+
+  .header-login {
     font-size: 0.75rem;
   }
 
