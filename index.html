@@ -57,12 +57,12 @@
           </div>
         </div>
 
-        <div class="reading-room" aria-label="Preview of a personal library">
+        <div class="reading-room" aria-label="Preview of a personal reading journal">
           <div class="room-glow"></div>
           <div class="room-topline">
             <div>
-              <p>My reading room</p>
-              <strong>Wednesday, 22 July</strong>
+              <p>A page from your reading life</p>
+              <strong>Your quiet corner, today</strong>
             </div>
             <span class="room-monogram">ML</span>
           </div>
@@ -73,42 +73,52 @@
               <small>ΑΓΙΟΣ ΠΟΡΦΥΡΙΟΣ</small>
             </div>
             <div class="current-copy">
-              <p class="small-label">Currently on your shelf</p>
+              <p class="small-label">Continue where you left off</p>
               <h2>Βίος και Λόγοι</h2>
               <p>Άγιος Πορφύριος</p>
-              <div class="book-meta">
-                <span><img src="images/pages.svg" alt="" /> 650 pages</span>
-                <span><img src="images/read-status.svg" alt="" /> Read</span>
+              <div class="reading-progress-preview">
+                <div>
+                  <span><strong>Page 312</strong> of 650</span>
+                  <b>48%</b>
+                </div>
+                <i><span></span></i>
               </div>
-              <a href="/signup">View book details <span>↗</span></a>
+              <p class="return-note">Your bookmark is waiting. There is no hurry.</p>
+              <a href="/signup">Return to page 312 <span>→</span></a>
             </div>
           </div>
 
           <div class="shelf-preview">
             <div class="shelf-heading">
               <div>
-                <p>Your collection</p>
-                <strong>Three stories, one quiet corner</strong>
+                <p>Your reading path</p>
+                <strong>Every book has its place in the story</strong>
               </div>
-              <span>3 books</span>
+              <span>This year</span>
             </div>
-            <div class="book-spines" aria-label="Three sample books">
-              <div class="spine spine-green">
-                <span>Βίος και Λόγοι</span><small>Πορφύριος</small>
+            <div class="reading-path" aria-label="Example reading journey">
+              <div class="path-book path-now">
+                <span>Now</span>
+                <strong>Βίος και Λόγοι</strong>
+                <small>Page 312</small>
               </div>
-              <div class="spine spine-russet">
-                <span>The Brothers Karamazov</span><small>Dostoevsky</small>
+              <div class="path-line" aria-hidden="true"><i></i></div>
+              <div class="path-book path-finished">
+                <span>Finished</span>
+                <strong>Pride and Prejudice</strong>
+                <small>A story kept</small>
               </div>
-              <div class="spine spine-red">
-                <span>Pride and Prejudice</span><small>Jane Austen</small>
+              <div class="path-line path-line-muted" aria-hidden="true"><i></i></div>
+              <div class="path-book path-next">
+                <span>Waiting</span>
+                <strong>The Brothers Karamazov</strong>
+                <small>Perhaps next</small>
               </div>
-              <a
-                class="add-book-tile"
-                href="/signup"
-                aria-label="Add a new book"
-                ><b>+</b><span>Add a book</span></a
-              >
             </div>
+          </div>
+          <div class="room-closing-note">
+            <span aria-hidden="true">✦</span>
+            <p><strong>No streaks. No pressure.</strong> Just a place that remembers your reading life.</p>
           </div>
         </div>
       </section>
